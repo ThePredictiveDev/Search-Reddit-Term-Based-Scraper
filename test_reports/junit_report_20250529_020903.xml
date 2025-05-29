@@ -1,0 +1,397 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites><testsuite name="pytest" errors="12" failures="0" skipped="0" tests="12" time="13.294" timestamp="2025-05-29T02:09:04.715779+05:30" hostname="DESKTOP-P3MSMOS"><testcase classname="tests.test_integration.TestSystemIntegration" name="test_complete_workflow" time="0.058"><error message="failed on setup with &quot;TypeError: MetricsAnalyzer.__init__() missing 1 required positional argument: 'db_manager'&quot;">self = &lt;tests.test_integration.TestSystemIntegration object at 0x000002873CEEAA80&gt;
+temp_database = 'C:\\Users\\Devansh\\AppData\\Local\\Temp\\tmpo2g7bdj8\\test.db'
+
+    @pytest.fixture
+    def integrated_system(self, temp_database):
+        """Create integrated system for testing."""
+        # Initialize all components
+        db_manager = DatabaseManager(f"sqlite:///{temp_database}")
+        db_manager.create_tables()
+    
+        scraper = RedditScraper(db_manager)
+&gt;       metrics_analyzer = MetricsAnalyzer()
+E       TypeError: MetricsAnalyzer.__init__() missing 1 required positional argument: 'db_manager'
+
+tests\test_integration.py:30: TypeError</error><error message="failed on teardown with &quot;PermissionError: [WinError 32] The process cannot access the file because it is being used by another process: 'C:\\Users\\Devansh\\AppData\\Local\\Temp\\tmpo2g7bdj8\\test.db'&quot;">@pytest.fixture
+    def temp_database():
+        """Temporary database for testing."""
+        temp_dir = tempfile.mkdtemp()
+        db_path = Path(temp_dir) / "test.db"
+    
+        yield str(db_path)
+    
+        # Cleanup
+&gt;       shutil.rmtree(temp_dir)
+
+tests\conftest.py:55: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+C:\Program Files\Python312\Lib\shutil.py:808: in rmtree
+    return _rmtree_unsafe(path, onexc)
+C:\Program Files\Python312\Lib\shutil.py:636: in _rmtree_unsafe
+    onexc(os.unlink, fullname, err)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+path = 'C:\\Users\\Devansh\\AppData\\Local\\Temp\\tmpo2g7bdj8'
+onexc = &lt;function rmtree.&lt;locals&gt;.onexc at 0x000002873DCC62A0&gt;
+
+    def _rmtree_unsafe(path, onexc):
+        try:
+            with os.scandir(path) as scandir_it:
+                entries = list(scandir_it)
+        except OSError as err:
+            onexc(os.scandir, path, err)
+            entries = []
+        for entry in entries:
+            fullname = entry.path
+            try:
+                is_dir = entry.is_dir(follow_symlinks=False)
+            except OSError:
+                is_dir = False
+    
+            if is_dir and not entry.is_junction():
+                try:
+                    if entry.is_symlink():
+                        # This can only happen if someone replaces
+                        # a directory with a symlink after the call to
+                        # os.scandir or entry.is_dir above.
+                        raise OSError("Cannot call rmtree on a symbolic link")
+                except OSError as err:
+                    onexc(os.path.islink, fullname, err)
+                    continue
+                _rmtree_unsafe(fullname, onexc)
+            else:
+                try:
+&gt;                   os.unlink(fullname)
+E                   PermissionError: [WinError 32] The process cannot access the file because it is being used by another process: 'C:\\Users\\Devansh\\AppData\\Local\\Temp\\tmpo2g7bdj8\\test.db'
+
+C:\Program Files\Python312\Lib\shutil.py:634: PermissionError</error></testcase><testcase classname="tests.test_integration.TestSystemIntegration" name="test_async_workflow" time="0.041"><error message="failed on setup with &quot;TypeError: MetricsAnalyzer.__init__() missing 1 required positional argument: 'db_manager'&quot;">self = &lt;tests.test_integration.TestSystemIntegration object at 0x000002873CF7CE00&gt;
+temp_database = 'C:\\Users\\Devansh\\AppData\\Local\\Temp\\tmp6a9m2a3d\\test.db'
+
+    @pytest.fixture
+    def integrated_system(self, temp_database):
+        """Create integrated system for testing."""
+        # Initialize all components
+        db_manager = DatabaseManager(f"sqlite:///{temp_database}")
+        db_manager.create_tables()
+    
+        scraper = RedditScraper(db_manager)
+&gt;       metrics_analyzer = MetricsAnalyzer()
+E       TypeError: MetricsAnalyzer.__init__() missing 1 required positional argument: 'db_manager'
+
+tests\test_integration.py:30: TypeError</error><error message="failed on teardown with &quot;PermissionError: [WinError 32] The process cannot access the file because it is being used by another process: 'C:\\Users\\Devansh\\AppData\\Local\\Temp\\tmp6a9m2a3d\\test.db'&quot;">@pytest.fixture
+    def temp_database():
+        """Temporary database for testing."""
+        temp_dir = tempfile.mkdtemp()
+        db_path = Path(temp_dir) / "test.db"
+    
+        yield str(db_path)
+    
+        # Cleanup
+&gt;       shutil.rmtree(temp_dir)
+
+tests\conftest.py:55: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+C:\Program Files\Python312\Lib\shutil.py:808: in rmtree
+    return _rmtree_unsafe(path, onexc)
+C:\Program Files\Python312\Lib\shutil.py:636: in _rmtree_unsafe
+    onexc(os.unlink, fullname, err)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+path = 'C:\\Users\\Devansh\\AppData\\Local\\Temp\\tmp6a9m2a3d'
+onexc = &lt;function rmtree.&lt;locals&gt;.onexc at 0x000002873E693EC0&gt;
+
+    def _rmtree_unsafe(path, onexc):
+        try:
+            with os.scandir(path) as scandir_it:
+                entries = list(scandir_it)
+        except OSError as err:
+            onexc(os.scandir, path, err)
+            entries = []
+        for entry in entries:
+            fullname = entry.path
+            try:
+                is_dir = entry.is_dir(follow_symlinks=False)
+            except OSError:
+                is_dir = False
+    
+            if is_dir and not entry.is_junction():
+                try:
+                    if entry.is_symlink():
+                        # This can only happen if someone replaces
+                        # a directory with a symlink after the call to
+                        # os.scandir or entry.is_dir above.
+                        raise OSError("Cannot call rmtree on a symbolic link")
+                except OSError as err:
+                    onexc(os.path.islink, fullname, err)
+                    continue
+                _rmtree_unsafe(fullname, onexc)
+            else:
+                try:
+&gt;                   os.unlink(fullname)
+E                   PermissionError: [WinError 32] The process cannot access the file because it is being used by another process: 'C:\\Users\\Devansh\\AppData\\Local\\Temp\\tmp6a9m2a3d\\test.db'
+
+C:\Program Files\Python312\Lib\shutil.py:634: PermissionError</error></testcase><testcase classname="tests.test_integration.TestSystemIntegration" name="test_error_propagation" time="0.036"><error message="failed on setup with &quot;TypeError: MetricsAnalyzer.__init__() missing 1 required positional argument: 'db_manager'&quot;">self = &lt;tests.test_integration.TestSystemIntegration object at 0x000002873CF7D070&gt;
+temp_database = 'C:\\Users\\Devansh\\AppData\\Local\\Temp\\tmpu5t45b0f\\test.db'
+
+    @pytest.fixture
+    def integrated_system(self, temp_database):
+        """Create integrated system for testing."""
+        # Initialize all components
+        db_manager = DatabaseManager(f"sqlite:///{temp_database}")
+        db_manager.create_tables()
+    
+        scraper = RedditScraper(db_manager)
+&gt;       metrics_analyzer = MetricsAnalyzer()
+E       TypeError: MetricsAnalyzer.__init__() missing 1 required positional argument: 'db_manager'
+
+tests\test_integration.py:30: TypeError</error><error message="failed on teardown with &quot;PermissionError: [WinError 32] The process cannot access the file because it is being used by another process: 'C:\\Users\\Devansh\\AppData\\Local\\Temp\\tmpu5t45b0f\\test.db'&quot;">@pytest.fixture
+    def temp_database():
+        """Temporary database for testing."""
+        temp_dir = tempfile.mkdtemp()
+        db_path = Path(temp_dir) / "test.db"
+    
+        yield str(db_path)
+    
+        # Cleanup
+&gt;       shutil.rmtree(temp_dir)
+
+tests\conftest.py:55: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+C:\Program Files\Python312\Lib\shutil.py:808: in rmtree
+    return _rmtree_unsafe(path, onexc)
+C:\Program Files\Python312\Lib\shutil.py:636: in _rmtree_unsafe
+    onexc(os.unlink, fullname, err)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+path = 'C:\\Users\\Devansh\\AppData\\Local\\Temp\\tmpu5t45b0f'
+onexc = &lt;function rmtree.&lt;locals&gt;.onexc at 0x000002873F0994E0&gt;
+
+    def _rmtree_unsafe(path, onexc):
+        try:
+            with os.scandir(path) as scandir_it:
+                entries = list(scandir_it)
+        except OSError as err:
+            onexc(os.scandir, path, err)
+            entries = []
+        for entry in entries:
+            fullname = entry.path
+            try:
+                is_dir = entry.is_dir(follow_symlinks=False)
+            except OSError:
+                is_dir = False
+    
+            if is_dir and not entry.is_junction():
+                try:
+                    if entry.is_symlink():
+                        # This can only happen if someone replaces
+                        # a directory with a symlink after the call to
+                        # os.scandir or entry.is_dir above.
+                        raise OSError("Cannot call rmtree on a symbolic link")
+                except OSError as err:
+                    onexc(os.path.islink, fullname, err)
+                    continue
+                _rmtree_unsafe(fullname, onexc)
+            else:
+                try:
+&gt;                   os.unlink(fullname)
+E                   PermissionError: [WinError 32] The process cannot access the file because it is being used by another process: 'C:\\Users\\Devansh\\AppData\\Local\\Temp\\tmpu5t45b0f\\test.db'
+
+C:\Program Files\Python312\Lib\shutil.py:634: PermissionError</error></testcase><testcase classname="tests.test_integration.TestSystemIntegration" name="test_data_consistency" time="0.040"><error message="failed on setup with &quot;TypeError: MetricsAnalyzer.__init__() missing 1 required positional argument: 'db_manager'&quot;">self = &lt;tests.test_integration.TestSystemIntegration object at 0x000002873CF7D220&gt;
+temp_database = 'C:\\Users\\Devansh\\AppData\\Local\\Temp\\tmpffeqfjrd\\test.db'
+
+    @pytest.fixture
+    def integrated_system(self, temp_database):
+        """Create integrated system for testing."""
+        # Initialize all components
+        db_manager = DatabaseManager(f"sqlite:///{temp_database}")
+        db_manager.create_tables()
+    
+        scraper = RedditScraper(db_manager)
+&gt;       metrics_analyzer = MetricsAnalyzer()
+E       TypeError: MetricsAnalyzer.__init__() missing 1 required positional argument: 'db_manager'
+
+tests\test_integration.py:30: TypeError</error><error message="failed on teardown with &quot;PermissionError: [WinError 32] The process cannot access the file because it is being used by another process: 'C:\\Users\\Devansh\\AppData\\Local\\Temp\\tmpffeqfjrd\\test.db'&quot;">@pytest.fixture
+    def temp_database():
+        """Temporary database for testing."""
+        temp_dir = tempfile.mkdtemp()
+        db_path = Path(temp_dir) / "test.db"
+    
+        yield str(db_path)
+    
+        # Cleanup
+&gt;       shutil.rmtree(temp_dir)
+
+tests\conftest.py:55: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+C:\Program Files\Python312\Lib\shutil.py:808: in rmtree
+    return _rmtree_unsafe(path, onexc)
+C:\Program Files\Python312\Lib\shutil.py:636: in _rmtree_unsafe
+    onexc(os.unlink, fullname, err)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+path = 'C:\\Users\\Devansh\\AppData\\Local\\Temp\\tmpffeqfjrd'
+onexc = &lt;function rmtree.&lt;locals&gt;.onexc at 0x000002873F98E5C0&gt;
+
+    def _rmtree_unsafe(path, onexc):
+        try:
+            with os.scandir(path) as scandir_it:
+                entries = list(scandir_it)
+        except OSError as err:
+            onexc(os.scandir, path, err)
+            entries = []
+        for entry in entries:
+            fullname = entry.path
+            try:
+                is_dir = entry.is_dir(follow_symlinks=False)
+            except OSError:
+                is_dir = False
+    
+            if is_dir and not entry.is_junction():
+                try:
+                    if entry.is_symlink():
+                        # This can only happen if someone replaces
+                        # a directory with a symlink after the call to
+                        # os.scandir or entry.is_dir above.
+                        raise OSError("Cannot call rmtree on a symbolic link")
+                except OSError as err:
+                    onexc(os.path.islink, fullname, err)
+                    continue
+                _rmtree_unsafe(fullname, onexc)
+            else:
+                try:
+&gt;                   os.unlink(fullname)
+E                   PermissionError: [WinError 32] The process cannot access the file because it is being used by another process: 'C:\\Users\\Devansh\\AppData\\Local\\Temp\\tmpffeqfjrd\\test.db'
+
+C:\Program Files\Python312\Lib\shutil.py:634: PermissionError</error></testcase><testcase classname="tests.test_integration.TestSystemIntegration" name="test_concurrent_access" time="0.038"><error message="failed on setup with &quot;TypeError: MetricsAnalyzer.__init__() missing 1 required positional argument: 'db_manager'&quot;">self = &lt;tests.test_integration.TestSystemIntegration object at 0x000002873CF7D3D0&gt;
+temp_database = 'C:\\Users\\Devansh\\AppData\\Local\\Temp\\tmpi1lzxmx8\\test.db'
+
+    @pytest.fixture
+    def integrated_system(self, temp_database):
+        """Create integrated system for testing."""
+        # Initialize all components
+        db_manager = DatabaseManager(f"sqlite:///{temp_database}")
+        db_manager.create_tables()
+    
+        scraper = RedditScraper(db_manager)
+&gt;       metrics_analyzer = MetricsAnalyzer()
+E       TypeError: MetricsAnalyzer.__init__() missing 1 required positional argument: 'db_manager'
+
+tests\test_integration.py:30: TypeError</error><error message="failed on teardown with &quot;PermissionError: [WinError 32] The process cannot access the file because it is being used by another process: 'C:\\Users\\Devansh\\AppData\\Local\\Temp\\tmpi1lzxmx8\\test.db'&quot;">@pytest.fixture
+    def temp_database():
+        """Temporary database for testing."""
+        temp_dir = tempfile.mkdtemp()
+        db_path = Path(temp_dir) / "test.db"
+    
+        yield str(db_path)
+    
+        # Cleanup
+&gt;       shutil.rmtree(temp_dir)
+
+tests\conftest.py:55: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+C:\Program Files\Python312\Lib\shutil.py:808: in rmtree
+    return _rmtree_unsafe(path, onexc)
+C:\Program Files\Python312\Lib\shutil.py:636: in _rmtree_unsafe
+    onexc(os.unlink, fullname, err)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+path = 'C:\\Users\\Devansh\\AppData\\Local\\Temp\\tmpi1lzxmx8'
+onexc = &lt;function rmtree.&lt;locals&gt;.onexc at 0x000002873ED8BCE0&gt;
+
+    def _rmtree_unsafe(path, onexc):
+        try:
+            with os.scandir(path) as scandir_it:
+                entries = list(scandir_it)
+        except OSError as err:
+            onexc(os.scandir, path, err)
+            entries = []
+        for entry in entries:
+            fullname = entry.path
+            try:
+                is_dir = entry.is_dir(follow_symlinks=False)
+            except OSError:
+                is_dir = False
+    
+            if is_dir and not entry.is_junction():
+                try:
+                    if entry.is_symlink():
+                        # This can only happen if someone replaces
+                        # a directory with a symlink after the call to
+                        # os.scandir or entry.is_dir above.
+                        raise OSError("Cannot call rmtree on a symbolic link")
+                except OSError as err:
+                    onexc(os.path.islink, fullname, err)
+                    continue
+                _rmtree_unsafe(fullname, onexc)
+            else:
+                try:
+&gt;                   os.unlink(fullname)
+E                   PermissionError: [WinError 32] The process cannot access the file because it is being used by another process: 'C:\\Users\\Devansh\\AppData\\Local\\Temp\\tmpi1lzxmx8\\test.db'
+
+C:\Program Files\Python312\Lib\shutil.py:634: PermissionError</error></testcase><testcase classname="tests.test_integration.TestSystemIntegration" name="test_performance_integration" time="0.038"><error message="failed on setup with &quot;TypeError: MetricsAnalyzer.__init__() missing 1 required positional argument: 'db_manager'&quot;">self = &lt;tests.test_integration.TestSystemIntegration object at 0x000002873CF7D580&gt;
+temp_database = 'C:\\Users\\Devansh\\AppData\\Local\\Temp\\tmp7j3qoy0c\\test.db'
+
+    @pytest.fixture
+    def integrated_system(self, temp_database):
+        """Create integrated system for testing."""
+        # Initialize all components
+        db_manager = DatabaseManager(f"sqlite:///{temp_database}")
+        db_manager.create_tables()
+    
+        scraper = RedditScraper(db_manager)
+&gt;       metrics_analyzer = MetricsAnalyzer()
+E       TypeError: MetricsAnalyzer.__init__() missing 1 required positional argument: 'db_manager'
+
+tests\test_integration.py:30: TypeError</error><error message="failed on teardown with &quot;PermissionError: [WinError 32] The process cannot access the file because it is being used by another process: 'C:\\Users\\Devansh\\AppData\\Local\\Temp\\tmp7j3qoy0c\\test.db'&quot;">@pytest.fixture
+    def temp_database():
+        """Temporary database for testing."""
+        temp_dir = tempfile.mkdtemp()
+        db_path = Path(temp_dir) / "test.db"
+    
+        yield str(db_path)
+    
+        # Cleanup
+&gt;       shutil.rmtree(temp_dir)
+
+tests\conftest.py:55: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+C:\Program Files\Python312\Lib\shutil.py:808: in rmtree
+    return _rmtree_unsafe(path, onexc)
+C:\Program Files\Python312\Lib\shutil.py:636: in _rmtree_unsafe
+    onexc(os.unlink, fullname, err)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+path = 'C:\\Users\\Devansh\\AppData\\Local\\Temp\\tmp7j3qoy0c'
+onexc = &lt;function rmtree.&lt;locals&gt;.onexc at 0x000002873DD342C0&gt;
+
+    def _rmtree_unsafe(path, onexc):
+        try:
+            with os.scandir(path) as scandir_it:
+                entries = list(scandir_it)
+        except OSError as err:
+            onexc(os.scandir, path, err)
+            entries = []
+        for entry in entries:
+            fullname = entry.path
+            try:
+                is_dir = entry.is_dir(follow_symlinks=False)
+            except OSError:
+                is_dir = False
+    
+            if is_dir and not entry.is_junction():
+                try:
+                    if entry.is_symlink():
+                        # This can only happen if someone replaces
+                        # a directory with a symlink after the call to
+                        # os.scandir or entry.is_dir above.
+                        raise OSError("Cannot call rmtree on a symbolic link")
+                except OSError as err:
+                    onexc(os.path.islink, fullname, err)
+                    continue
+                _rmtree_unsafe(fullname, onexc)
+            else:
+                try:
+&gt;                   os.unlink(fullname)
+E                   PermissionError: [WinError 32] The process cannot access the file because it is being used by another process: 'C:\\Users\\Devansh\\AppData\\Local\\Temp\\tmp7j3qoy0c\\test.db'
+
+C:\Program Files\Python312\Lib\shutil.py:634: PermissionError</error></testcase></testsuite></testsuites>

@@ -1,0 +1,67 @@
+2025-05-29 08:29:30,469 [INFO] minimal_test: === MINIMAL INTERFACE TEST STARTING ===
+2025-05-29 08:29:30,470 [INFO] minimal_test: Setting up environment...
+2025-05-29 08:29:30,470 [INFO] minimal_test: Testing imports...
+2025-05-29 08:29:30,470 [INFO] minimal_test: Importing gradio...
+2025-05-29 08:29:32,113 [DEBUG] PIL.Image: Importing BlpImagePlugin
+2025-05-29 08:29:32,114 [DEBUG] PIL.Image: Importing BmpImagePlugin
+2025-05-29 08:29:32,115 [DEBUG] PIL.Image: Importing BufrStubImagePlugin
+2025-05-29 08:29:32,115 [DEBUG] PIL.Image: Importing CurImagePlugin
+2025-05-29 08:29:32,116 [DEBUG] PIL.Image: Importing DcxImagePlugin
+2025-05-29 08:29:32,117 [DEBUG] PIL.Image: Importing DdsImagePlugin
+2025-05-29 08:29:32,118 [DEBUG] PIL.Image: Importing EpsImagePlugin
+2025-05-29 08:29:32,119 [DEBUG] PIL.Image: Importing FitsImagePlugin
+2025-05-29 08:29:32,119 [DEBUG] PIL.Image: Importing FliImagePlugin
+2025-05-29 08:29:32,120 [DEBUG] PIL.Image: Importing FpxImagePlugin
+2025-05-29 08:29:32,121 [DEBUG] PIL.Image: Image: failed to import FpxImagePlugin: No module named 'olefile'
+2025-05-29 08:29:32,121 [DEBUG] PIL.Image: Importing FtexImagePlugin
+2025-05-29 08:29:32,121 [DEBUG] PIL.Image: Importing GbrImagePlugin
+2025-05-29 08:29:32,122 [DEBUG] PIL.Image: Importing GifImagePlugin
+2025-05-29 08:29:32,123 [DEBUG] PIL.Image: Importing GribStubImagePlugin
+2025-05-29 08:29:32,124 [DEBUG] PIL.Image: Importing Hdf5StubImagePlugin
+2025-05-29 08:29:32,124 [DEBUG] PIL.Image: Importing IcnsImagePlugin
+2025-05-29 08:29:32,125 [DEBUG] PIL.Image: Importing IcoImagePlugin
+2025-05-29 08:29:32,126 [DEBUG] PIL.Image: Importing ImImagePlugin
+2025-05-29 08:29:32,126 [DEBUG] PIL.Image: Importing ImtImagePlugin
+2025-05-29 08:29:32,127 [DEBUG] PIL.Image: Importing IptcImagePlugin
+2025-05-29 08:29:32,127 [DEBUG] PIL.Image: Importing JpegImagePlugin
+2025-05-29 08:29:32,128 [DEBUG] PIL.Image: Importing Jpeg2KImagePlugin
+2025-05-29 08:29:32,128 [DEBUG] PIL.Image: Importing McIdasImagePlugin
+2025-05-29 08:29:32,129 [DEBUG] PIL.Image: Importing MicImagePlugin
+2025-05-29 08:29:32,130 [DEBUG] PIL.Image: Image: failed to import MicImagePlugin: No module named 'olefile'
+2025-05-29 08:29:32,130 [DEBUG] PIL.Image: Importing MpegImagePlugin
+2025-05-29 08:29:32,130 [DEBUG] PIL.Image: Importing MpoImagePlugin
+2025-05-29 08:29:32,132 [DEBUG] PIL.Image: Importing MspImagePlugin
+2025-05-29 08:29:32,133 [DEBUG] PIL.Image: Importing PalmImagePlugin
+2025-05-29 08:29:32,133 [DEBUG] PIL.Image: Importing PcdImagePlugin
+2025-05-29 08:29:32,134 [DEBUG] PIL.Image: Importing PcxImagePlugin
+2025-05-29 08:29:32,134 [DEBUG] PIL.Image: Importing PdfImagePlugin
+2025-05-29 08:29:32,137 [DEBUG] PIL.Image: Importing PixarImagePlugin
+2025-05-29 08:29:32,137 [DEBUG] PIL.Image: Importing PngImagePlugin
+2025-05-29 08:29:32,137 [DEBUG] PIL.Image: Importing PpmImagePlugin
+2025-05-29 08:29:32,138 [DEBUG] PIL.Image: Importing PsdImagePlugin
+2025-05-29 08:29:32,138 [DEBUG] PIL.Image: Importing QoiImagePlugin
+2025-05-29 08:29:32,139 [DEBUG] PIL.Image: Importing SgiImagePlugin
+2025-05-29 08:29:32,139 [DEBUG] PIL.Image: Importing SpiderImagePlugin
+2025-05-29 08:29:32,140 [DEBUG] PIL.Image: Importing SunImagePlugin
+2025-05-29 08:29:32,140 [DEBUG] PIL.Image: Importing TgaImagePlugin
+2025-05-29 08:29:32,141 [DEBUG] PIL.Image: Importing TiffImagePlugin
+2025-05-29 08:29:32,141 [DEBUG] PIL.Image: Importing WebPImagePlugin
+2025-05-29 08:29:32,142 [DEBUG] PIL.Image: Importing WmfImagePlugin
+2025-05-29 08:29:32,142 [DEBUG] PIL.Image: Importing XbmImagePlugin
+2025-05-29 08:29:32,143 [DEBUG] PIL.Image: Importing XpmImagePlugin
+2025-05-29 08:29:32,143 [DEBUG] PIL.Image: Importing XVThumbImagePlugin
+2025-05-29 08:29:33,212 [INFO] minimal_test: Gradio version: 5.29.0
+2025-05-29 08:29:33,212 [INFO] minimal_test: Importing app...
+2025-05-29 08:29:33,272 [INFO] config.advanced_settings: Configuration loaded from environment variables
+2025-05-29 08:29:34,248 [INFO] monitoring.system_monitor: Registered health check: system_resources
+2025-05-29 08:29:34,248 [INFO] monitoring.system_monitor: Registered health check: database_connection
+2025-05-29 08:29:34,249 [INFO] monitoring.system_monitor: Registered health check: redis_connection
+2025-05-29 08:29:34,249 [INFO] monitoring.system_monitor: Registered health check: disk_space
+2025-05-29 08:29:34,249 [INFO] monitoring.system_monitor: Registered health check: network_connectivity
+2025-05-29 08:29:39,040 [INFO] database.cache_manager: Redis cache connected successfully
+2025-05-29 08:29:39,064 [INFO] database.cache_manager: Redis cache connected successfully
+2025-05-29 08:29:39,064 [INFO] scraper.reddit_scraper: Cache manager enabled
+2025-05-29 08:29:39,064 [INFO] scraper.reddit_scraper: Real-time monitoring enabled
+2025-05-29 08:29:39,064 [WARNING] analytics.advanced_sentiment: Transformers not available, falling back to TextBlob only
+2025-05-29 08:29:39,078 [INFO] minimal_test: App imported successfully
+2025-05-29 08:29:39,079 [INFO] minimal_test: Creating tracker...

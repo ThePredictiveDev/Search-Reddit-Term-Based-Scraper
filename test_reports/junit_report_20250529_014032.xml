@@ -1,0 +1,1371 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites><testsuite name="pytest" errors="5" failures="63" skipped="0" tests="111" time="95.612" timestamp="2025-05-29T01:40:33.224937+05:30" hostname="DESKTOP-P3MSMOS"><testcase classname="tests.test_database.TestDatabaseManager" name="test_database_initialization" time="0.041" /><testcase classname="tests.test_database.TestDatabaseManager" name="test_create_search_session" time="0.015" /><testcase classname="tests.test_database.TestDatabaseManager" name="test_add_mention" time="0.011"><failure message="TypeError: DatabaseManager.add_mention() takes 2 positional arguments but 3 were given">self = &lt;tests.test_database.TestDatabaseManager object at 0x00000135389B8650&gt;
+db_manager = &lt;database.models.DatabaseManager object at 0x0000013570B22750&gt;
+sample_mention_data = {'author': 'test_user', 'content': 'This is a test post discussing OpenAI technology and its impact.', 'created_utc': datetime.datetime(2025, 5, 28, 20, 10, 47, 743469), 'num_comments': 15, ...}
+
+    def test_add_mention(self, db_manager, sample_mention_data):
+        """Test adding Reddit mentions."""
+        # Create session first
+        session_id = db_manager.create_search_session("test")
+    
+        # Add mention
+&gt;       mention_id = db_manager.add_mention(session_id, sample_mention_data)
+E       TypeError: DatabaseManager.add_mention() takes 2 positional arguments but 3 were given
+
+tests\test_database.py:51: TypeError</failure></testcase><testcase classname="tests.test_database.TestDatabaseManager" name="test_get_mentions_by_session" time="0.011"><failure message="TypeError: DatabaseManager.add_mention() takes 2 positional arguments but 3 were given">self = &lt;tests.test_database.TestDatabaseManager object at 0x00000135389B8800&gt;
+db_manager = &lt;database.models.DatabaseManager object at 0x0000013570BDC7A0&gt;
+sample_mentions_list = [{'author': 'test_user', 'content': 'This is a test post discussing OpenAI technology and its impact.', 'created_utc':...ogy and its impact.', 'created_utc': datetime.datetime(2025, 5, 28, 20, 10, 47, 763469), 'num_comments': 15, ...}, ...]
+
+    def test_get_mentions_by_session(self, db_manager, sample_mentions_list):
+        """Test retrieving mentions by session."""
+        # Create session
+        session_id = db_manager.create_search_session("test")
+    
+        # Add multiple mentions
+        for mention_data in sample_mentions_list:
+&gt;           db_manager.add_mention(session_id, mention_data)
+E           TypeError: DatabaseManager.add_mention() takes 2 positional arguments but 3 were given
+
+tests\test_database.py:71: TypeError</failure></testcase><testcase classname="tests.test_database.TestDatabaseManager" name="test_get_recent_sessions" time="0.020"><failure message="AttributeError: 'DatabaseManager' object has no attribute 'get_recent_sessions'. Did you mean: 'get_latest_session'?">self = &lt;tests.test_database.TestDatabaseManager object at 0x00000135389B89E0&gt;
+db_manager = &lt;database.models.DatabaseManager object at 0x0000013570B234D0&gt;
+
+    def test_get_recent_sessions(self, db_manager):
+        """Test retrieving recent search sessions."""
+        # Create multiple sessions
+        session_ids = []
+        for i in range(5):
+            session_id = db_manager.create_search_session(f"test_{i}")
+            session_ids.append(session_id)
+    
+        # Get recent sessions
+&gt;       recent_sessions = db_manager.get_recent_sessions(limit=3)
+E       AttributeError: 'DatabaseManager' object has no attribute 'get_recent_sessions'. Did you mean: 'get_latest_session'?
+
+tests\test_database.py:88: AttributeError</failure></testcase><testcase classname="tests.test_database.TestDatabaseManager" name="test_duplicate_reddit_id_handling" time="0.011"><failure message="TypeError: DatabaseManager.add_mention() takes 2 positional arguments but 3 were given">self = &lt;tests.test_database.TestDatabaseManager object at 0x00000135389B8B60&gt;
+db_manager = &lt;database.models.DatabaseManager object at 0x000001356FAFE6C0&gt;
+sample_mention_data = {'author': 'test_user', 'content': 'This is a test post discussing OpenAI technology and its impact.', 'created_utc': datetime.datetime(2025, 5, 28, 20, 10, 47, 812467), 'num_comments': 15, ...}
+
+    def test_duplicate_reddit_id_handling(self, db_manager, sample_mention_data):
+        """Test handling of duplicate Reddit IDs."""
+        session_id = db_manager.create_search_session("test")
+    
+        # Add mention first time
+&gt;       mention_id_1 = db_manager.add_mention(session_id, sample_mention_data)
+E       TypeError: DatabaseManager.add_mention() takes 2 positional arguments but 3 were given
+
+tests\test_database.py:99: TypeError</failure></testcase><testcase classname="tests.test_database.TestDatabaseManager" name="test_session_context_manager" time="0.016" /><testcase classname="tests.test_database.TestDatabaseManager" name="test_database_cleanup" time="0.017"><failure message="TypeError: DatabaseManager.add_mention() takes 2 positional arguments but 3 were given">self = &lt;tests.test_database.TestDatabaseManager object at 0x00000135389B8E90&gt;
+db_manager = &lt;database.models.DatabaseManager object at 0x0000013570BDEB70&gt;
+sample_mentions_list = [{'author': 'test_user', 'content': 'This is a test post discussing OpenAI technology and its impact.', 'created_utc':...ogy and its impact.', 'created_utc': datetime.datetime(2025, 5, 28, 20, 10, 47, 849468), 'num_comments': 15, ...}, ...]
+
+    def test_database_cleanup(self, db_manager, sample_mentions_list):
+        """Test database cleanup operations."""
+        # Create old session
+        session_id = db_manager.create_search_session("old_test")
+    
+        # Manually set old timestamp
+        with db_manager.get_session() as session:
+            search_session = session.query(SearchSession).filter_by(id=session_id).first()
+            search_session.created_at = datetime.utcnow() - timedelta(days=35)
+            session.commit()
+    
+        # Add mentions to old session
+        for mention_data in sample_mentions_list[:3]:
+&gt;           db_manager.add_mention(session_id, mention_data)
+E           TypeError: DatabaseManager.add_mention() takes 2 positional arguments but 3 were given
+
+tests\test_database.py:137: TypeError</failure></testcase><testcase classname="tests.test_database.TestSearchSession" name="test_search_session_creation" time="0.001"><failure message="assert None is not None&#10; +  where None = &lt;database.models.SearchSession object at 0x0000013570BF5880&gt;.created_at">self = &lt;tests.test_database.TestSearchSession object at 0x00000135389B91C0&gt;
+
+    def test_search_session_creation(self):
+        """Test SearchSession model creation."""
+        session = SearchSession(search_term="OpenAI")
+    
+        assert session.search_term == "OpenAI"
+&gt;       assert session.created_at is not None
+E       assert None is not None
+E        +  where None = &lt;database.models.SearchSession object at 0x0000013570BF5880&gt;.created_at
+
+tests\test_database.py:162: AssertionError</failure></testcase><testcase classname="tests.test_database.TestSearchSession" name="test_search_session_repr" time="0.001"><failure message="AssertionError: assert 'OpenAI' in '&lt;database.models.SearchSession object at 0x0000013570BF61E0&gt;'">self = &lt;tests.test_database.TestSearchSession object at 0x00000135389B92E0&gt;
+
+    def test_search_session_repr(self):
+        """Test SearchSession string representation."""
+        session = SearchSession(id=1, search_term="OpenAI")
+        repr_str = repr(session)
+    
+        assert "SearchSession" in repr_str
+&gt;       assert "OpenAI" in repr_str
+E       AssertionError: assert 'OpenAI' in '&lt;database.models.SearchSession object at 0x0000013570BF61E0&gt;'
+
+tests\test_database.py:171: AssertionError</failure></testcase><testcase classname="tests.test_database.TestRedditMention" name="test_reddit_mention_creation" time="0.001"><failure message="AttributeError: 'RedditMention' object has no attribute 'created_at'. Did you mean: 'created_utc'?">self = &lt;tests.test_database.TestRedditMention object at 0x00000135389B93D0&gt;
+sample_mention_data = {'author': 'test_user', 'content': 'This is a test post discussing OpenAI technology and its impact.', 'created_utc': datetime.datetime(2025, 5, 28, 20, 10, 47, 882467), 'num_comments': 15, ...}
+
+    def test_reddit_mention_creation(self, sample_mention_data):
+        """Test RedditMention model creation."""
+        mention = RedditMention(
+            session_id=1,
+            **sample_mention_data
+        )
+    
+        assert mention.session_id == 1
+        assert mention.reddit_id == sample_mention_data['reddit_id']
+        assert mention.title == sample_mention_data['title']
+&gt;       assert mention.created_at is not None
+E       AttributeError: 'RedditMention' object has no attribute 'created_at'. Did you mean: 'created_utc'?
+
+tests\test_database.py:187: AttributeError</failure></testcase><testcase classname="tests.test_database.TestRedditMention" name="test_reddit_mention_to_dict" time="0.001"><failure message="AttributeError: 'RedditMention' object has no attribute 'to_dict'">self = &lt;tests.test_database.TestRedditMention object at 0x00000135389B9490&gt;
+sample_mention_data = {'author': 'test_user', 'content': 'This is a test post discussing OpenAI technology and its impact.', 'created_utc': datetime.datetime(2025, 5, 28, 20, 10, 47, 892466), 'num_comments': 15, ...}
+
+    def test_reddit_mention_to_dict(self, sample_mention_data):
+        """Test RedditMention to_dict method."""
+        mention = RedditMention(
+            session_id=1,
+            **sample_mention_data
+        )
+    
+&gt;       mention_dict = mention.to_dict()
+E       AttributeError: 'RedditMention' object has no attribute 'to_dict'
+
+tests\test_database.py:196: AttributeError</failure></testcase><testcase classname="tests.test_database.TestRedditMention" name="test_reddit_mention_repr" time="0.001"><failure message="AssertionError: assert 'test123' in '&lt;database.models.RedditMention object at 0x0000013570C80620&gt;'">self = &lt;tests.test_database.TestRedditMention object at 0x00000135389B96D0&gt;
+sample_mention_data = {'author': 'test_user', 'content': 'This is a test post discussing OpenAI technology and its impact.', 'created_utc': datetime.datetime(2025, 5, 28, 20, 10, 47, 902466), 'num_comments': 15, ...}
+
+    def test_reddit_mention_repr(self, sample_mention_data):
+        """Test RedditMention string representation."""
+        mention = RedditMention(
+            id=1,
+            session_id=1,
+            **sample_mention_data
+        )
+    
+        repr_str = repr(mention)
+        assert "RedditMention" in repr_str
+&gt;       assert sample_mention_data['reddit_id'] in repr_str
+E       AssertionError: assert 'test123' in '&lt;database.models.RedditMention object at 0x0000013570C80620&gt;'
+
+tests\test_database.py:213: AssertionError</failure></testcase><testcase classname="tests.test_database.TestDatabasePerformance" name="test_bulk_insert_performance" time="0.012"><failure message="TypeError: DatabaseManager.add_mention() takes 2 positional arguments but 3 were given">self = &lt;tests.test_database.TestDatabasePerformance object at 0x00000135389B99D0&gt;
+db_manager = &lt;database.models.DatabaseManager object at 0x0000013570C81100&gt;
+sample_mentions_list = [{'author': 'test_user', 'content': 'This is a test post discussing OpenAI technology and its impact.', 'created_utc':...ogy and its impact.', 'created_utc': datetime.datetime(2025, 5, 28, 20, 10, 47, 916468), 'num_comments': 15, ...}, ...]
+performance_monitor = &lt;tests.conftest.performance_monitor.&lt;locals&gt;.PerformanceMonitor object at 0x0000013570C81FD0&gt;
+
+    def test_bulk_insert_performance(self, db_manager, sample_mentions_list, performance_monitor):
+        """Test bulk insert performance."""
+        session_id = db_manager.create_search_session("performance_test")
+    
+        # Extend sample data for performance testing
+        large_dataset = []
+        for i in range(100):
+            for mention in sample_mentions_list:
+                mention_copy = mention.copy()
+                mention_copy['reddit_id'] = f"{mention['reddit_id']}_{i}"
+                large_dataset.append(mention_copy)
+    
+        performance_monitor.start()
+    
+        # Insert all mentions
+        for mention_data in large_dataset:
+&gt;           db_manager.add_mention(session_id, mention_data)
+E           TypeError: DatabaseManager.add_mention() takes 2 positional arguments but 3 were given
+
+tests\test_database.py:235: TypeError</failure></testcase><testcase classname="tests.test_database.TestDatabasePerformance" name="test_query_performance" time="0.011"><failure message="TypeError: DatabaseManager.add_mention() takes 2 positional arguments but 3 were given">self = &lt;tests.test_database.TestDatabasePerformance object at 0x00000135389B9C40&gt;
+db_manager = &lt;database.models.DatabaseManager object at 0x0000013570BF5700&gt;
+sample_mentions_list = [{'author': 'test_user', 'content': 'This is a test post discussing OpenAI technology and its impact.', 'created_utc':...ogy and its impact.', 'created_utc': datetime.datetime(2025, 5, 28, 20, 10, 47, 936467), 'num_comments': 15, ...}, ...]
+performance_monitor = &lt;tests.conftest.performance_monitor.&lt;locals&gt;.PerformanceMonitor object at 0x000001356FA8BEF0&gt;
+
+    def test_query_performance(self, db_manager, sample_mentions_list, performance_monitor):
+        """Test query performance with large dataset."""
+        # Create multiple sessions with mentions
+        session_ids = []
+        for i in range(10):
+            session_id = db_manager.create_search_session(f"query_test_{i}")
+            session_ids.append(session_id)
+    
+            for mention_data in sample_mentions_list:
+                mention_copy = mention_data.copy()
+                mention_copy['reddit_id'] = f"{mention_data['reddit_id']}_{i}"
+&gt;               db_manager.add_mention(session_id, mention_copy)
+E               TypeError: DatabaseManager.add_mention() takes 2 positional arguments but 3 were given
+
+tests\test_database.py:258: TypeError</failure></testcase><testcase classname="tests.test_database.TestDatabaseIntegration" name="test_concurrent_operations" time="0.025"><failure message="TypeError: DatabaseManager.add_mention() takes 2 positional arguments but 3 were given">self = &lt;tests.test_database.TestDatabaseIntegration object at 0x00000135389B9E80&gt;
+db_manager = &lt;database.models.DatabaseManager object at 0x00000135389B9A60&gt;
+sample_mention_data = {'author': 'test_user', 'content': 'This is a test post discussing OpenAI technology and its impact.', 'created_utc': datetime.datetime(2025, 5, 28, 20, 10, 47, 957466), 'num_comments': 15, ...}
+
+    @pytest.mark.asyncio
+    async def test_concurrent_operations(self, db_manager, sample_mention_data):
+        """Test concurrent database operations."""
+        async def create_session_and_mentions(term_suffix):
+            session_id = db_manager.create_search_session(f"concurrent_test_{term_suffix}")
+    
+            for i in range(5):
+                mention_data = sample_mention_data.copy()
+                mention_data['reddit_id'] = f"concurrent_{term_suffix}_{i}"
+                db_manager.add_mention(session_id, mention_data)
+    
+            return session_id
+    
+        # Run concurrent operations
+        tasks = [create_session_and_mentions(i) for i in range(5)]
+&gt;       session_ids = await asyncio.gather(*tasks)
+
+tests\test_database.py:295: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+term_suffix = 0
+
+    async def create_session_and_mentions(term_suffix):
+        session_id = db_manager.create_search_session(f"concurrent_test_{term_suffix}")
+    
+        for i in range(5):
+            mention_data = sample_mention_data.copy()
+            mention_data['reddit_id'] = f"concurrent_{term_suffix}_{i}"
+&gt;           db_manager.add_mention(session_id, mention_data)
+E           TypeError: DatabaseManager.add_mention() takes 2 positional arguments but 3 were given
+
+tests\test_database.py:289: TypeError</failure></testcase><testcase classname="tests.test_database.TestDatabaseIntegration" name="test_transaction_rollback" time="0.016" /><testcase classname="tests.test_scraper.TestRedditScraper" name="test_scraper_initialization" time="0.041" /><testcase classname="tests.test_scraper.TestRedditScraper" name="test_sanitize_search_term" time="0.037" /><testcase classname="tests.test_scraper.TestRedditScraper" name="test_generate_cache_key" time="0.036" /><testcase classname="tests.test_scraper.TestRedditScraper" name="test_extract_reddit_id" time="0.036" /><testcase classname="tests.test_scraper.TestRedditScraper" name="test_parse_score" time="0.035" /><testcase classname="tests.test_scraper.TestRedditScraper" name="test_parse_comment_count" time="0.036" /><testcase classname="tests.test_scraper.TestRedditScraper" name="test_calculate_relevance_score" time="0.035" /><testcase classname="tests.test_scraper.TestRedditScraper" name="test_calculate_basic_sentiment" time="0.058" /><testcase classname="tests.test_scraper.TestRedditScraper" name="test_is_relevant" time="0.169" /><testcase classname="tests.test_scraper.TestRedditScraper" name="test_remove_duplicates" time="0.037" /><testcase classname="tests.test_scraper.TestScrapingWithMocks" name="test_extract_post_data_success" time="0.048" /><testcase classname="tests.test_scraper.TestScrapingWithMocks" name="test_extract_post_data_missing_elements" time="0.036" /><testcase classname="tests.test_scraper.TestScrapingWithMocks" name="test_handle_popups" time="3.071" /><testcase classname="tests.test_scraper.TestScrapingWithMocks" name="test_scrape_mentions_with_cache_hit" time="0.039" /><testcase classname="tests.test_scraper.TestScrapingWithMocks" name="test_scrape_mentions_error_handling" time="0.039" /><testcase classname="tests.test_scraper.TestScrapingWithMocks" name="test_circuit_breaker_functionality" time="0.038" /><testcase classname="tests.test_scraper.TestScrapingPerformance" name="test_rate_limiting" time="2.182" /><testcase classname="tests.test_scraper.TestScrapingPerformance" name="test_concurrent_scraping_limits" time="0.141" /><testcase classname="tests.test_scraper.TestScrapingIntegration" name="test_full_scraping_pipeline_mock" time="62.894"><failure message="scraper.reddit_scraper.ScrapingError: Scraping failed for 'OpenAI': 'RedditScraper' object has no attribute '_post_process_mentions'">self = &lt;scraper.reddit_scraper.RedditScraper object at 0x000001357111DDF0&gt;
+search_term = 'OpenAI', session_id = 1, max_pages = 1, progress_callback = None
+use_advanced_patterns = True, quality_threshold = 0.3
+
+    async def scrape_mentions(
+        self,
+        search_term: str,
+        session_id: int,
+        max_pages: int = 5,
+        progress_callback: Optional[Callable] = None,
+        use_advanced_patterns: bool = True,
+        quality_threshold: float = 0.3
+    ) -&gt; List[Dict[str, Any]]:
+        """
+        Enhanced scraping with comprehensive error handling and quality filtering.
+        """
+        # Input validation and sanitization
+        search_term = self._sanitize_search_term(search_term)
+        if not search_term:
+            raise ValueError("Invalid search term after sanitization")
+    
+        # Check circuit breaker
+        if not self._check_circuit_breaker():
+            raise ScrapingError("Circuit breaker is open, scraping temporarily disabled")
+    
+        # Initialize metrics
+        metrics = ScrapingMetrics(start_time=datetime.utcnow())
+    
+        # Check cache with enhanced key
+        cache_key = self._generate_cache_key(search_term, max_pages, quality_threshold)
+        if self.cache_manager:
+            cached_mentions = self.cache_manager.get_search_results(cache_key)
+            if cached_mentions:
+                metrics.cache_hits = 1
+                self.logger.info(f"Found {len(cached_mentions)} cached mentions for '{search_term}'")
+                if self.monitor:
+                    self.monitor.emit_cache_hit(search_term, len(cached_mentions))
+                return cached_mentions
+    
+        all_mentions = []
+    
+        try:
+            # Enhanced browser setup with stealth mode
+            async with async_playwright() as p:
+                browser = await self._create_stealth_browser(p)
+    
+                try:
+                    context = await self._create_browser_context(browser)
+                    page = await context.new_page()
+    
+                    # Set up page monitoring
+                    await self._setup_page_monitoring(page)
+    
+                    # Progressive scraping strategy
+                    if use_advanced_patterns:
+                        mentions = await self._progressive_scraping(
+                            page, search_term, session_id, max_pages,
+                            progress_callback, metrics, quality_threshold
+                        )
+                    else:
+                        mentions = await self._basic_scraping(
+                            page, search_term, session_id, max_pages,
+                            progress_callback, metrics
+                        )
+    
+                    all_mentions.extend(mentions)
+    
+                finally:
+                    await browser.close()
+    
+            # Post-processing and quality enhancement
+            if progress_callback:
+                progress_callback("#x1F50D Processing and enhancing mentions...", 0.9)
+    
+&gt;           enhanced_mentions = await self._post_process_mentions(
+                all_mentions, search_term, quality_threshold, metrics
+            )
+E           AttributeError: 'RedditScraper' object has no attribute '_post_process_mentions'
+
+scraper\reddit_scraper.py:316: AttributeError
+
+The above exception was the direct cause of the following exception:
+
+self = &lt;tests.test_scraper.TestScrapingIntegration object at 0x000001356BE97F50&gt;
+db_manager = &lt;database.models.DatabaseManager object at 0x000001357111F680&gt;
+sample_mentions_list = [{'author': 'test_user', 'content': 'This is a test post discussing OpenAI technology and its impact.', 'created_utc':...ogy and its impact.', 'created_utc': datetime.datetime(2025, 5, 28, 20, 10, 54, 159980), 'num_comments': 15, ...}, ...]
+
+    @pytest.mark.asyncio
+    async def test_full_scraping_pipeline_mock(self, db_manager, sample_mentions_list):
+        """Test full scraping pipeline with mocked browser."""
+        scraper = RedditScraper(db_manager)
+    
+        # Mock the entire browser interaction
+        with patch('scraper.reddit_scraper.async_playwright') as mock_playwright:
+            # Setup mock browser
+            mock_browser = AsyncMock()
+            mock_context = AsyncMock()
+            mock_page = AsyncMock()
+    
+            mock_playwright.return_value.__aenter__.return_value.chromium.launch.return_value = mock_browser
+            mock_browser.new_context.return_value = mock_context
+            mock_context.new_page.return_value = mock_page
+    
+            # Mock page interactions
+            mock_page.goto = AsyncMock()
+            mock_page.wait_for_selector = AsyncMock()
+            mock_page.query_selector_all.return_value = []  # No posts found
+    
+            # Run scraping
+&gt;           result = await scraper.scrape_mentions("OpenAI", 1, max_pages=1)
+
+tests\test_scraper.py:382: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = &lt;scraper.reddit_scraper.RedditScraper object at 0x000001357111DDF0&gt;
+search_term = 'OpenAI', session_id = 1, max_pages = 1, progress_callback = None
+use_advanced_patterns = True, quality_threshold = 0.3
+
+    async def scrape_mentions(
+        self,
+        search_term: str,
+        session_id: int,
+        max_pages: int = 5,
+        progress_callback: Optional[Callable] = None,
+        use_advanced_patterns: bool = True,
+        quality_threshold: float = 0.3
+    ) -&gt; List[Dict[str, Any]]:
+        """
+        Enhanced scraping with comprehensive error handling and quality filtering.
+        """
+        # Input validation and sanitization
+        search_term = self._sanitize_search_term(search_term)
+        if not search_term:
+            raise ValueError("Invalid search term after sanitization")
+    
+        # Check circuit breaker
+        if not self._check_circuit_breaker():
+            raise ScrapingError("Circuit breaker is open, scraping temporarily disabled")
+    
+        # Initialize metrics
+        metrics = ScrapingMetrics(start_time=datetime.utcnow())
+    
+        # Check cache with enhanced key
+        cache_key = self._generate_cache_key(search_term, max_pages, quality_threshold)
+        if self.cache_manager:
+            cached_mentions = self.cache_manager.get_search_results(cache_key)
+            if cached_mentions:
+                metrics.cache_hits = 1
+                self.logger.info(f"Found {len(cached_mentions)} cached mentions for '{search_term}'")
+                if self.monitor:
+                    self.monitor.emit_cache_hit(search_term, len(cached_mentions))
+                return cached_mentions
+    
+        all_mentions = []
+    
+        try:
+            # Enhanced browser setup with stealth mode
+            async with async_playwright() as p:
+                browser = await self._create_stealth_browser(p)
+    
+                try:
+                    context = await self._create_browser_context(browser)
+                    page = await context.new_page()
+    
+                    # Set up page monitoring
+                    await self._setup_page_monitoring(page)
+    
+                    # Progressive scraping strategy
+                    if use_advanced_patterns:
+                        mentions = await self._progressive_scraping(
+                            page, search_term, session_id, max_pages,
+                            progress_callback, metrics, quality_threshold
+                        )
+                    else:
+                        mentions = await self._basic_scraping(
+                            page, search_term, session_id, max_pages,
+                            progress_callback, metrics
+                        )
+    
+                    all_mentions.extend(mentions)
+    
+                finally:
+                    await browser.close()
+    
+            # Post-processing and quality enhancement
+            if progress_callback:
+                progress_callback("#x1F50D Processing and enhancing mentions...", 0.9)
+    
+            enhanced_mentions = await self._post_process_mentions(
+                all_mentions, search_term, quality_threshold, metrics
+            )
+    
+            # Cache results with enhanced key
+            if self.cache_manager and enhanced_mentions:
+                self.cache_manager.set_search_results(cache_key, enhanced_mentions)
+    
+            # Record success
+            self._record_success()
+            metrics.end_time = datetime.utcnow()
+            metrics.mentions_found = len(enhanced_mentions)
+    
+            # Log comprehensive metrics
+            self._log_scraping_metrics(metrics, search_term)
+    
+            if progress_callback:
+                progress_callback(f"✅ Completed! Found {len(enhanced_mentions)} high-quality mentions", 1.0)
+    
+            return enhanced_mentions
+    
+        except Exception as e:
+            self._record_failure()
+            metrics.end_time = datetime.utcnow()
+            metrics.errors_encountered += 1
+    
+            error_msg = f"Scraping failed for '{search_term}': {str(e)}"
+            self.logger.error(error_msg)
+    
+            if self.monitor:
+                self.monitor.emit_search_failed(session_id, error_msg)
+    
+            if progress_callback:
+                progress_callback(f"❌ Error: {error_msg}", 1.0)
+    
+            # Return partial results if any
+            if all_mentions:
+                self.logger.info(f"Returning {len(all_mentions)} partial results despite error")
+                return all_mentions
+    
+&gt;           raise ScrapingError(error_msg) from e
+E           scraper.reddit_scraper.ScrapingError: Scraping failed for 'OpenAI': 'RedditScraper' object has no attribute '_post_process_mentions'
+
+scraper\reddit_scraper.py:356: ScrapingError</failure></testcase><testcase classname="tests.test_scraper.TestScrapingIntegration" name="test_post_processing_pipeline" time="0.037"><failure message="AttributeError: 'RedditScraper' object has no attribute '_post_process_mentions'">self = &lt;tests.test_scraper.TestScrapingIntegration object at 0x000001356BE97770&gt;
+db_manager = &lt;database.models.DatabaseManager object at 0x0000013571971B50&gt;
+sample_mentions_list = [{'author': 'test_user', 'content': 'This is a test post discussing OpenAI technology and its impact.', 'created_utc':...ogy and its impact.', 'created_utc': datetime.datetime(2025, 5, 28, 20, 11, 57, 109522), 'num_comments': 15, ...}, ...]
+
+    @pytest.mark.asyncio
+    async def test_post_processing_pipeline(self, db_manager, sample_mentions_list):
+        """Test post-processing pipeline."""
+        scraper = RedditScraper(db_manager)
+    
+        # Test the post-processing method directly
+&gt;       enhanced_mentions = await scraper._post_process_mentions(
+            sample_mentions_list, "OpenAI", 0.3, None
+        )
+E       AttributeError: 'RedditScraper' object has no attribute '_post_process_mentions'
+
+tests\test_scraper.py:396: AttributeError</failure></testcase><testcase classname="tests.test_scraper.TestScrapingIntegration" name="test_error_recovery" time="0.037"><failure message="ValueError: Invalid search term after sanitization">self = &lt;tests.test_scraper.TestScrapingIntegration object at 0x000001356BE96EA0&gt;
+db_manager = &lt;database.models.DatabaseManager object at 0x000001357270B110&gt;
+
+    @pytest.mark.asyncio
+    async def test_error_recovery(self, db_manager):
+        """Test error recovery mechanisms."""
+        scraper = RedditScraper(db_manager)
+    
+        # Test with invalid search term
+&gt;       result = await scraper.scrape_mentions("", 1)
+
+tests\test_scraper.py:415: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = &lt;scraper.reddit_scraper.RedditScraper object at 0x000001357270B0B0&gt;
+search_term = '', session_id = 1, max_pages = 5, progress_callback = None
+use_advanced_patterns = True, quality_threshold = 0.3
+
+    async def scrape_mentions(
+        self,
+        search_term: str,
+        session_id: int,
+        max_pages: int = 5,
+        progress_callback: Optional[Callable] = None,
+        use_advanced_patterns: bool = True,
+        quality_threshold: float = 0.3
+    ) -&gt; List[Dict[str, Any]]:
+        """
+        Enhanced scraping with comprehensive error handling and quality filtering.
+        """
+        # Input validation and sanitization
+        search_term = self._sanitize_search_term(search_term)
+        if not search_term:
+&gt;           raise ValueError("Invalid search term after sanitization")
+E           ValueError: Invalid search term after sanitization
+
+scraper\reddit_scraper.py:261: ValueError</failure></testcase><testcase classname="tests.test_scraper.TestScrapingConfiguration" name="test_proxy_configuration" time="0.038" /><testcase classname="tests.test_scraper.TestScrapingConfiguration" name="test_user_agent_rotation" time="0.038" /><testcase classname="tests.test_scraper.TestScrapingConfiguration" name="test_search_patterns_configuration" time="0.035" /><testcase classname="tests.test_scraper.TestScrapingConfiguration" name="test_subreddit_categories" time="0.036" /><testcase classname="tests.test_analytics.TestMetricsAnalyzer" name="test_analyzer_initialization" time="0.007" /><testcase classname="tests.test_analytics.TestMetricsAnalyzer" name="test_analyze_session_metrics" time="0.043" /><testcase classname="tests.test_analytics.TestMetricsAnalyzer" name="test_calculate_temporal_metrics" time="0.007"><failure message="AttributeError: 'MetricsAnalyzer' object has no attribute 'calculate_temporal_metrics'. Did you mean: '_calculate_temporal_metrics'?">self = &lt;tests.test_analytics.TestMetricsAnalyzer object at 0x000001356BEDD100&gt;
+metrics_analyzer = &lt;analytics.metrics_analyzer.MetricsAnalyzer object at 0x0000013571981B20&gt;
+sample_mentions_list = [{'author': 'test_user', 'content': 'This is a test post discussing OpenAI technology and its impact.', 'created_utc':...ogy and its impact.', 'created_utc': datetime.datetime(2025, 5, 28, 15, 11, 57, 424315), 'num_comments': 15, ...}, ...]
+
+    def test_calculate_temporal_metrics(self, metrics_analyzer, sample_mentions_list):
+        """Test temporal metrics calculation."""
+        # Add timestamps to mentions
+        now = datetime.utcnow()
+        for i, mention in enumerate(sample_mentions_list):
+            mention['created_utc'] = now - timedelta(hours=i)
+    
+&gt;       metrics = metrics_analyzer.calculate_temporal_metrics(sample_mentions_list)
+E       AttributeError: 'MetricsAnalyzer' object has no attribute 'calculate_temporal_metrics'. Did you mean: '_calculate_temporal_metrics'?
+
+tests\test_analytics.py:70: AttributeError</failure></testcase><testcase classname="tests.test_analytics.TestMetricsAnalyzer" name="test_calculate_subreddit_metrics" time="0.008"><failure message="AttributeError: 'MetricsAnalyzer' object has no attribute 'calculate_subreddit_metrics'. Did you mean: '_calculate_subreddit_metrics'?">self = &lt;tests.test_analytics.TestMetricsAnalyzer object at 0x000001356BEDD370&gt;
+metrics_analyzer = &lt;analytics.metrics_analyzer.MetricsAnalyzer object at 0x0000013571982750&gt;
+sample_mentions_list = [{'author': 'test_user', 'content': 'This is a test post discussing OpenAI technology and its impact.', 'created_utc':...ogy and its impact.', 'created_utc': datetime.datetime(2025, 5, 28, 20, 11, 57, 595314), 'num_comments': 15, ...}, ...]
+
+    def test_calculate_subreddit_metrics(self, metrics_analyzer, sample_mentions_list):
+        """Test subreddit metrics calculation."""
+        # Add different subreddits
+        subreddits = ['technology', 'programming', 'artificial', 'MachineLearning']
+        for i, mention in enumerate(sample_mentions_list):
+            mention['subreddit'] = subreddits[i % len(subreddits)]
+    
+&gt;       metrics = metrics_analyzer.calculate_subreddit_metrics(sample_mentions_list)
+E       AttributeError: 'MetricsAnalyzer' object has no attribute 'calculate_subreddit_metrics'. Did you mean: '_calculate_subreddit_metrics'?
+
+tests\test_analytics.py:87: AttributeError</failure></testcase><testcase classname="tests.test_analytics.TestMetricsAnalyzer" name="test_calculate_sentiment_metrics" time="0.008"><failure message="AttributeError: 'MetricsAnalyzer' object has no attribute 'calculate_sentiment_metrics'. Did you mean: '_calculate_sentiment_metrics'?">self = &lt;tests.test_analytics.TestMetricsAnalyzer object at 0x000001356BEDD5E0&gt;
+metrics_analyzer = &lt;analytics.metrics_analyzer.MetricsAnalyzer object at 0x0000013571BE07A0&gt;
+sample_mentions_list = [{'author': 'test_user', 'content': 'This is a test post discussing OpenAI technology and its impact.', 'created_utc':...ogy and its impact.', 'created_utc': datetime.datetime(2025, 5, 28, 20, 11, 57, 615313), 'num_comments': 15, ...}, ...]
+
+    def test_calculate_sentiment_metrics(self, metrics_analyzer, sample_mentions_list):
+        """Test sentiment metrics calculation."""
+&gt;       metrics = metrics_analyzer.calculate_sentiment_metrics(sample_mentions_list)
+E       AttributeError: 'MetricsAnalyzer' object has no attribute 'calculate_sentiment_metrics'. Did you mean: '_calculate_sentiment_metrics'?
+
+tests\test_analytics.py:98: AttributeError</failure></testcase><testcase classname="tests.test_analytics.TestMetricsAnalyzer" name="test_calculate_engagement_metrics" time="0.007"><failure message="AttributeError: 'MetricsAnalyzer' object has no attribute 'calculate_engagement_metrics'. Did you mean: '_calculate_engagement_metrics'?">self = &lt;tests.test_analytics.TestMetricsAnalyzer object at 0x000001356BEDD880&gt;
+metrics_analyzer = &lt;analytics.metrics_analyzer.MetricsAnalyzer object at 0x0000013571BE1BB0&gt;
+sample_mentions_list = [{'author': 'test_user', 'content': 'This is a test post discussing OpenAI technology and its impact.', 'created_utc':...ogy and its impact.', 'created_utc': datetime.datetime(2025, 5, 28, 20, 11, 57, 633314), 'num_comments': 15, ...}, ...]
+
+    def test_calculate_engagement_metrics(self, metrics_analyzer, sample_mentions_list):
+        """Test engagement metrics calculation."""
+&gt;       metrics = metrics_analyzer.calculate_engagement_metrics(sample_mentions_list)
+E       AttributeError: 'MetricsAnalyzer' object has no attribute 'calculate_engagement_metrics'. Did you mean: '_calculate_engagement_metrics'?
+
+tests\test_analytics.py:114: AttributeError</failure></testcase><testcase classname="tests.test_analytics.TestMetricsAnalyzer" name="test_detect_trending_topics" time="0.007"><failure message="AttributeError: 'MetricsAnalyzer' object has no attribute 'detect_trending_topics'">self = &lt;tests.test_analytics.TestMetricsAnalyzer object at 0x000001356BEDDAF0&gt;
+metrics_analyzer = &lt;analytics.metrics_analyzer.MetricsAnalyzer object at 0x00000135719834D0&gt;
+sample_mentions_list = [{'author': 'test_user', 'content': 'This is a test post discussing OpenAI technology and its impact.', 'created_utc':...ogy and its impact.', 'created_utc': datetime.datetime(2025, 5, 28, 20, 11, 57, 651313), 'num_comments': 15, ...}, ...]
+
+    def test_detect_trending_topics(self, metrics_analyzer, sample_mentions_list):
+        """Test trending topic detection."""
+        # Add keywords to titles
+        keywords = ['AI', 'machine learning', 'neural networks', 'deep learning']
+        for i, mention in enumerate(sample_mentions_list):
+            mention['title'] = f"Post about {keywords[i % len(keywords)]} technology"
+    
+&gt;       trending = metrics_analyzer.detect_trending_topics(sample_mentions_list)
+E       AttributeError: 'MetricsAnalyzer' object has no attribute 'detect_trending_topics'
+
+tests\test_analytics.py:134: AttributeError</failure></testcase><testcase classname="tests.test_analytics.TestMetricsAnalyzer" name="test_generate_comprehensive_metrics" time="0.007"><failure message="AttributeError: 'MetricsAnalyzer' object has no attribute 'generate_comprehensive_metrics'">self = &lt;tests.test_analytics.TestMetricsAnalyzer object at 0x000001356BEDDD60&gt;
+metrics_analyzer = &lt;analytics.metrics_analyzer.MetricsAnalyzer object at 0x00000135719804D0&gt;
+sample_mentions_list = [{'author': 'test_user', 'content': 'This is a test post discussing OpenAI technology and its impact.', 'created_utc':...ogy and its impact.', 'created_utc': datetime.datetime(2025, 5, 28, 20, 11, 57, 673315), 'num_comments': 15, ...}, ...]
+
+    def test_generate_comprehensive_metrics(self, metrics_analyzer, sample_mentions_list):
+        """Test comprehensive metrics generation."""
+&gt;       metrics = metrics_analyzer.generate_comprehensive_metrics(sample_mentions_list)
+E       AttributeError: 'MetricsAnalyzer' object has no attribute 'generate_comprehensive_metrics'
+
+tests\test_analytics.py:145: AttributeError</failure></testcase><testcase classname="tests.test_analytics.TestMetricsAnalyzer" name="test_empty_mentions_handling" time="0.007"><failure message="AttributeError: 'MetricsAnalyzer' object has no attribute 'generate_comprehensive_metrics'">self = &lt;tests.test_analytics.TestMetricsAnalyzer object at 0x000001356BEDDF70&gt;
+metrics_analyzer = &lt;analytics.metrics_analyzer.MetricsAnalyzer object at 0x0000013571C125A0&gt;
+
+    def test_empty_mentions_handling(self, metrics_analyzer):
+        """Test handling of empty mentions list."""
+&gt;       metrics = metrics_analyzer.generate_comprehensive_metrics([])
+E       AttributeError: 'MetricsAnalyzer' object has no attribute 'generate_comprehensive_metrics'
+
+tests\test_analytics.py:163: AttributeError</failure></testcase><testcase classname="tests.test_analytics.TestMetricsAnalyzer" name="test_malformed_data_handling" time="0.007"><failure message="AttributeError: 'MetricsAnalyzer' object has no attribute 'generate_comprehensive_metrics'">self = &lt;tests.test_analytics.TestMetricsAnalyzer object at 0x000001356BEDE180&gt;
+metrics_analyzer = &lt;analytics.metrics_analyzer.MetricsAnalyzer object at 0x0000013571C11910&gt;
+
+    def test_malformed_data_handling(self, metrics_analyzer):
+        """Test handling of malformed data."""
+        malformed_mentions = [
+            {'title': 'Valid post', 'score': 10},  # Missing fields
+            {'reddit_id': 'test', 'score': 'invalid'},  # Invalid score type
+            {},  # Empty mention
+            None  # None mention
+        ]
+    
+        # Should handle gracefully without crashing
+&gt;       metrics = metrics_analyzer.generate_comprehensive_metrics(malformed_mentions)
+E       AttributeError: 'MetricsAnalyzer' object has no attribute 'generate_comprehensive_metrics'
+
+tests\test_analytics.py:180: AttributeError</failure></testcase><testcase classname="tests.test_analytics.TestDataValidator" name="test_validator_initialization" time="0.001" /><testcase classname="tests.test_analytics.TestDataValidator" name="test_validate_mention_valid_data" time="0.178" /><testcase classname="tests.test_analytics.TestDataValidator" name="test_validate_mention_invalid_data" time="0.008" /><testcase classname="tests.test_analytics.TestDataValidator" name="test_validate_mention_spam_detection" time="0.009" /><testcase classname="tests.test_analytics.TestDataValidator" name="test_validate_dataset" time="0.113" /><testcase classname="tests.test_analytics.TestDataValidator" name="test_duplicate_detection" time="0.001" /><testcase classname="tests.test_analytics.TestDataValidator" name="test_language_analysis" time="0.007" /><testcase classname="tests.test_analytics.TestDataValidator" name="test_content_quality_analysis" time="0.001" /><testcase classname="tests.test_analytics.TestDataValidator" name="test_quality_metrics_calculation" time="0.092" /><testcase classname="tests.test_analytics.TestAdvancedSentimentAnalyzer" name="test_analyzer_initialization" time="0.001"><failure message="AssertionError: assert False&#10; +  where False = hasattr(&lt;analytics.advanced_sentiment.AdvancedSentimentAnalyzer object at 0x000001357561B110&gt;, 'providers')">self = &lt;tests.test_analytics.TestAdvancedSentimentAnalyzer object at 0x000001356BEDF200&gt;
+sentiment_analyzer = &lt;analytics.advanced_sentiment.AdvancedSentimentAnalyzer object at 0x000001357561B110&gt;
+
+    def test_analyzer_initialization(self, sentiment_analyzer):
+        """Test sentiment analyzer initialization."""
+        assert sentiment_analyzer is not None
+&gt;       assert hasattr(sentiment_analyzer, 'providers')
+E       AssertionError: assert False
+E        +  where False = hasattr(&lt;analytics.advanced_sentiment.AdvancedSentimentAnalyzer object at 0x000001357561B110&gt;, 'providers')
+
+tests\test_analytics.py:344: AssertionError</failure></testcase><testcase classname="tests.test_analytics.TestAdvancedSentimentAnalyzer" name="test_is_available" time="0.001" /><testcase classname="tests.test_analytics.TestAdvancedSentimentAnalyzer" name="test_analyze_sentiment_positive" time="0.002" /><testcase classname="tests.test_analytics.TestAdvancedSentimentAnalyzer" name="test_analyze_sentiment_negative" time="0.001" /><testcase classname="tests.test_analytics.TestAdvancedSentimentAnalyzer" name="test_analyze_sentiment_empty" time="0.001" /><testcase classname="tests.test_analytics.TestAdvancedSentimentAnalyzer" name="test_analyze_batch" time="0.001" /><testcase classname="tests.test_analytics.TestAdvancedSentimentAnalyzer" name="test_textblob_analysis" time="0.001"><failure message="AttributeError: 'AdvancedSentimentAnalyzer' object has no attribute '_analyze_textblob'">self = &lt;tests.test_analytics.TestAdvancedSentimentAnalyzer object at 0x000001356BEDC980&gt;
+sentiment_analyzer = &lt;analytics.advanced_sentiment.AdvancedSentimentAnalyzer object at 0x000001357564E990&gt;
+
+    def test_textblob_analysis(self, sentiment_analyzer):
+        """Test TextBlob sentiment analysis."""
+        text = "This is a great product!"
+    
+&gt;       result = sentiment_analyzer._analyze_textblob(text)
+E       AttributeError: 'AdvancedSentimentAnalyzer' object has no attribute '_analyze_textblob'
+
+tests\test_analytics.py:409: AttributeError</failure></testcase><testcase classname="tests.test_analytics.TestAdvancedSentimentAnalyzer" name="test_vader_analysis" time="0.001"><failure message="AttributeError: 'AdvancedSentimentAnalyzer' object has no attribute '_is_vader_available'">self = &lt;tests.test_analytics.TestAdvancedSentimentAnalyzer object at 0x000001356BEDF470&gt;
+sentiment_analyzer = &lt;analytics.advanced_sentiment.AdvancedSentimentAnalyzer object at 0x000001357564C3E0&gt;
+
+    def test_vader_analysis(self, sentiment_analyzer):
+        """Test VADER sentiment analysis."""
+        text = "This is a great product!"
+    
+&gt;       if sentiment_analyzer._is_vader_available():
+E       AttributeError: 'AdvancedSentimentAnalyzer' object has no attribute '_is_vader_available'
+
+tests\test_analytics.py:421: AttributeError</failure></testcase><testcase classname="tests.test_analytics.TestAdvancedSentimentAnalyzer" name="test_emotion_detection" time="0.001"><failure message="AttributeError: 'AdvancedSentimentAnalyzer' object has no attribute '_detect_emotions'">self = &lt;tests.test_analytics.TestAdvancedSentimentAnalyzer object at 0x000001356BEDF650&gt;
+sentiment_analyzer = &lt;analytics.advanced_sentiment.AdvancedSentimentAnalyzer object at 0x000001357564E390&gt;
+
+    def test_emotion_detection(self, sentiment_analyzer):
+        """Test emotion detection."""
+        emotional_texts = {
+            "I'm so happy and excited!": "joy",
+            "I'm really angry about this!": "anger",
+            "This makes me so sad.": "sadness",
+            "I'm terrified and scared.": "fear"
+        }
+    
+        for text, expected_emotion in emotional_texts.items():
+&gt;           emotions = sentiment_analyzer._detect_emotions(text)
+E           AttributeError: 'AdvancedSentimentAnalyzer' object has no attribute '_detect_emotions'
+
+tests\test_analytics.py:439: AttributeError</failure></testcase><testcase classname="tests.test_analytics.TestAnalyticsIntegration" name="test_full_analytics_pipeline" time="0.098"><failure message="AttributeError: 'MetricsAnalyzer' object has no attribute 'generate_comprehensive_metrics'">self = &lt;tests.test_analytics.TestAnalyticsIntegration object at 0x000001356BEDF920&gt;
+metrics_analyzer = &lt;analytics.metrics_analyzer.MetricsAnalyzer object at 0x000001357564E090&gt;
+data_validator = &lt;analytics.data_validator.DataValidator object at 0x000001357564DCA0&gt;
+sample_mentions_list = [{'_quality_level': 'good', '_quality_score': 0.7187496804763758, '_validation_issues': 2, 'author': 'test_user', ...}...quality_level': 'good', '_quality_score': 0.768749473773954, '_validation_issues': 2, 'author': 'test_user', ...}, ...]
+
+    def test_full_analytics_pipeline(self, metrics_analyzer, data_validator, sample_mentions_list):
+        """Test full analytics pipeline."""
+        # Step 1: Validate data
+        validated_mentions, quality_metrics = data_validator.validate_dataset(sample_mentions_list)
+    
+        # Step 2: Generate metrics
+&gt;       analytics_metrics = metrics_analyzer.generate_comprehensive_metrics(validated_mentions)
+E       AttributeError: 'MetricsAnalyzer' object has no attribute 'generate_comprehensive_metrics'
+
+tests\test_analytics.py:456: AttributeError</failure></testcase><testcase classname="tests.test_analytics.TestAnalyticsIntegration" name="test_analytics_with_empty_data" time="0.007"><failure message="AttributeError: 'MetricsAnalyzer' object has no attribute 'generate_comprehensive_metrics'">self = &lt;tests.test_analytics.TestAnalyticsIntegration object at 0x000001356BEDFB90&gt;
+metrics_analyzer = &lt;analytics.metrics_analyzer.MetricsAnalyzer object at 0x0000013573BF0980&gt;
+data_validator = &lt;analytics.data_validator.DataValidator object at 0x0000013573BF16A0&gt;
+
+    def test_analytics_with_empty_data(self, metrics_analyzer, data_validator):
+        """Test analytics pipeline with empty data."""
+        empty_mentions = []
+    
+        # Should handle empty data gracefully
+        validated_mentions, quality_metrics = data_validator.validate_dataset(empty_mentions)
+&gt;       analytics_metrics = metrics_analyzer.generate_comprehensive_metrics(validated_mentions)
+E       AttributeError: 'MetricsAnalyzer' object has no attribute 'generate_comprehensive_metrics'
+
+tests\test_analytics.py:473: AttributeError</failure></testcase><testcase classname="tests.test_analytics.TestAnalyticsIntegration" name="test_analytics_performance" time="7.937"><failure message="AttributeError: 'MetricsAnalyzer' object has no attribute 'generate_comprehensive_metrics'">self = &lt;tests.test_analytics.TestAnalyticsIntegration object at 0x000001356BEDFE00&gt;
+metrics_analyzer = &lt;analytics.metrics_analyzer.MetricsAnalyzer object at 0x0000013573534260&gt;
+data_validator = &lt;analytics.data_validator.DataValidator object at 0x0000013573536FC0&gt;
+performance_monitor = &lt;tests.conftest.performance_monitor.&lt;locals&gt;.PerformanceMonitor object at 0x0000013573BFCE60&gt;
+
+    def test_analytics_performance(self, metrics_analyzer, data_validator, performance_monitor):
+        """Test analytics performance with large dataset."""
+        # Create large dataset
+        large_dataset = []
+        base_mention = {
+            'reddit_id': 'test',
+            'title': 'Test post about technology',
+            'content': 'This is a test post discussing various technology topics.',
+            'author': 'test_user',
+            'subreddit': 'technology',
+            'score': 42,
+            'num_comments': 15,
+            'created_utc': datetime.utcnow(),
+            'sentiment_score': 0.5,
+            'relevance_score': 0.8
+        }
+    
+        for i in range(1000):
+            mention = base_mention.copy()
+            mention['reddit_id'] = f'test_{i}'
+            mention['title'] = f'Test post {i} about technology'
+            large_dataset.append(mention)
+    
+        performance_monitor.start()
+    
+        # Run analytics pipeline
+        validated_mentions, quality_metrics = data_validator.validate_dataset(large_dataset)
+&gt;       analytics_metrics = metrics_analyzer.generate_comprehensive_metrics(validated_mentions)
+E       AttributeError: 'MetricsAnalyzer' object has no attribute 'generate_comprehensive_metrics'
+
+tests\test_analytics.py:506: AttributeError</failure></testcase><testcase classname="tests.test_analytics.TestAnalyticsEdgeCases" name="test_metrics_with_extreme_values" time="0.007"><failure message="AttributeError: 'MetricsAnalyzer' object has no attribute 'generate_comprehensive_metrics'">self = &lt;tests.test_analytics.TestAnalyticsEdgeCases object at 0x000001356BEFC0E0&gt;
+metrics_analyzer = &lt;analytics.metrics_analyzer.MetricsAnalyzer object at 0x00000135732F5FA0&gt;
+
+    def test_metrics_with_extreme_values(self, metrics_analyzer):
+        """Test metrics calculation with extreme values."""
+        extreme_mentions = [
+            {
+                'reddit_id': 'extreme1',
+                'title': 'Post with extreme score',
+                'score': 999999,  # Very high score
+                'num_comments': 50000,  # Very high comments
+                'sentiment_score': 1.0,  # Maximum sentiment
+                'created_utc': datetime.utcnow()
+            },
+            {
+                'reddit_id': 'extreme2',
+                'title': 'Post with negative score',
+                'score': -1000,  # Negative score
+                'num_comments': 0,  # No comments
+                'sentiment_score': -1.0,  # Minimum sentiment
+                'created_utc': datetime.utcnow()
+            }
+        ]
+    
+        # Should handle extreme values without crashing
+&gt;       metrics = metrics_analyzer.generate_comprehensive_metrics(extreme_mentions)
+E       AttributeError: 'MetricsAnalyzer' object has no attribute 'generate_comprehensive_metrics'
+
+tests\test_analytics.py:543: AttributeError</failure></testcase><testcase classname="tests.test_analytics.TestAnalyticsEdgeCases" name="test_validation_with_unicode_content" time="0.025" /><testcase classname="tests.test_analytics.TestAnalyticsEdgeCases" name="test_analytics_with_missing_timestamps" time="0.007"><failure message="AttributeError: 'MetricsAnalyzer' object has no attribute 'generate_comprehensive_metrics'">self = &lt;tests.test_analytics.TestAnalyticsEdgeCases object at 0x000001356BEFC530&gt;
+metrics_analyzer = &lt;analytics.metrics_analyzer.MetricsAnalyzer object at 0x00000135733AE810&gt;
+
+    def test_analytics_with_missing_timestamps(self, metrics_analyzer):
+        """Test analytics with missing or invalid timestamps."""
+        mentions_no_timestamps = [
+            {
+                'reddit_id': 'no_time1',
+                'title': 'Post without timestamp',
+                'score': 10
+                # Missing created_utc
+            },
+            {
+                'reddit_id': 'bad_time1',
+                'title': 'Post with bad timestamp',
+                'score': 15,
+                'created_utc': 'invalid_timestamp'
+            }
+        ]
+    
+        # Should handle missing timestamps gracefully
+&gt;       metrics = metrics_analyzer.generate_comprehensive_metrics(mentions_no_timestamps)
+E       AttributeError: 'MetricsAnalyzer' object has no attribute 'generate_comprehensive_metrics'
+
+tests\test_analytics.py:586: AttributeError</failure></testcase><testcase classname="tests.test_ui.TestMetricsVisualizer" name="test_visualizer_initialization" time="0.001"><failure message="AssertionError: assert False&#10; +  where False = hasattr(&lt;ui.visualization.MetricsVisualizer object at 0x00000135733ACA40&gt;, 'reddit_colors')">self = &lt;tests.test_ui.TestMetricsVisualizer object at 0x000001356F9CE480&gt;
+visualizer = &lt;ui.visualization.MetricsVisualizer object at 0x00000135733ACA40&gt;
+
+    def test_visualizer_initialization(self, visualizer):
+        """Test visualizer initialization."""
+        assert visualizer is not None
+        assert hasattr(visualizer, 'color_scheme')
+&gt;       assert hasattr(visualizer, 'reddit_colors')
+E       AssertionError: assert False
+E        +  where False = hasattr(&lt;ui.visualization.MetricsVisualizer object at 0x00000135733ACA40&gt;, 'reddit_colors')
+
+tests\test_ui.py:23: AssertionError</failure></testcase><testcase classname="tests.test_ui.TestMetricsVisualizer" name="test_create_mentions_timeline" time="0.001"><failure message="AttributeError: 'MetricsVisualizer' object has no attribute 'create_mentions_timeline'">self = &lt;tests.test_ui.TestMetricsVisualizer object at 0x000001356F9CDB20&gt;
+visualizer = &lt;ui.visualization.MetricsVisualizer object at 0x00000135735588F0&gt;
+sample_mentions_list = [{'author': 'test_user', 'content': 'This is a test post discussing OpenAI technology and its impact.', 'created_utc':...logy and its impact.', 'created_utc': datetime.datetime(2025, 5, 28, 15, 12, 6, 373635), 'num_comments': 15, ...}, ...]
+
+    def test_create_mentions_timeline(self, visualizer, sample_mentions_list):
+        """Test mentions timeline creation."""
+        # Add timestamps to mentions
+        now = datetime.utcnow()
+        for i, mention in enumerate(sample_mentions_list):
+            mention['created_utc'] = now - timedelta(hours=i)
+    
+&gt;       fig = visualizer.create_mentions_timeline(sample_mentions_list)
+E       AttributeError: 'MetricsVisualizer' object has no attribute 'create_mentions_timeline'
+
+tests\test_ui.py:32: AttributeError</failure></testcase><testcase classname="tests.test_ui.TestMetricsVisualizer" name="test_create_sentiment_distribution" time="0.001"><failure message="AttributeError: 'MetricsVisualizer' object has no attribute 'create_sentiment_distribution'">self = &lt;tests.test_ui.TestMetricsVisualizer object at 0x000001356F9CD730&gt;
+visualizer = &lt;ui.visualization.MetricsVisualizer object at 0x0000013573538890&gt;
+sample_mentions_list = [{'author': 'test_user', 'content': 'This is a test post discussing OpenAI technology and its impact.', 'created_utc':...logy and its impact.', 'created_utc': datetime.datetime(2025, 5, 28, 20, 12, 6, 385635), 'num_comments': 15, ...}, ...]
+
+    def test_create_sentiment_distribution(self, visualizer, sample_mentions_list):
+        """Test sentiment distribution chart."""
+&gt;       fig = visualizer.create_sentiment_distribution(sample_mentions_list)
+E       AttributeError: 'MetricsVisualizer' object has no attribute 'create_sentiment_distribution'
+
+tests\test_ui.py:41: AttributeError</failure></testcase><testcase classname="tests.test_ui.TestMetricsVisualizer" name="test_create_subreddit_breakdown" time="0.001"><failure message="AttributeError: 'MetricsVisualizer' object has no attribute 'create_subreddit_breakdown'. Did you mean: 'create_subreddit_analysis'?">self = &lt;tests.test_ui.TestMetricsVisualizer object at 0x000001356F9CE720&gt;
+visualizer = &lt;ui.visualization.MetricsVisualizer object at 0x0000013573BEEDB0&gt;
+sample_mentions_list = [{'author': 'test_user', 'content': 'This is a test post discussing OpenAI technology and its impact.', 'created_utc':...logy and its impact.', 'created_utc': datetime.datetime(2025, 5, 28, 20, 12, 6, 398635), 'num_comments': 15, ...}, ...]
+
+    def test_create_subreddit_breakdown(self, visualizer, sample_mentions_list):
+        """Test subreddit breakdown chart."""
+        # Add subreddits to mentions
+        subreddits = ['technology', 'programming', 'artificial', 'MachineLearning']
+        for i, mention in enumerate(sample_mentions_list):
+            mention['subreddit'] = subreddits[i % len(subreddits)]
+    
+&gt;       fig = visualizer.create_subreddit_breakdown(sample_mentions_list)
+E       AttributeError: 'MetricsVisualizer' object has no attribute 'create_subreddit_breakdown'. Did you mean: 'create_subreddit_analysis'?
+
+tests\test_ui.py:54: AttributeError</failure></testcase><testcase classname="tests.test_ui.TestMetricsVisualizer" name="test_create_engagement_metrics" time="0.001"><failure message="AttributeError: 'MetricsVisualizer' object has no attribute 'create_engagement_metrics'. Did you mean: 'create_engagement_analysis'?">self = &lt;tests.test_ui.TestMetricsVisualizer object at 0x000001356F9CE900&gt;
+visualizer = &lt;ui.visualization.MetricsVisualizer object at 0x0000013573BEEE10&gt;
+sample_mentions_list = [{'author': 'test_user', 'content': 'This is a test post discussing OpenAI technology and its impact.', 'created_utc':...logy and its impact.', 'created_utc': datetime.datetime(2025, 5, 28, 20, 12, 6, 410637), 'num_comments': 15, ...}, ...]
+
+    def test_create_engagement_metrics(self, visualizer, sample_mentions_list):
+        """Test engagement metrics visualization."""
+&gt;       fig = visualizer.create_engagement_metrics(sample_mentions_list)
+E       AttributeError: 'MetricsVisualizer' object has no attribute 'create_engagement_metrics'. Did you mean: 'create_engagement_analysis'?
+
+tests\test_ui.py:62: AttributeError</failure></testcase><testcase classname="tests.test_ui.TestMetricsVisualizer" name="test_create_trending_topics" time="0.001"><failure message="AttributeError: 'MetricsVisualizer' object has no attribute 'create_trending_topics'">self = &lt;tests.test_ui.TestMetricsVisualizer object at 0x000001356F9CEAE0&gt;
+visualizer = &lt;ui.visualization.MetricsVisualizer object at 0x0000013573BED160&gt;
+sample_mentions_list = [{'author': 'test_user', 'content': 'This is a test post discussing OpenAI technology and its impact.', 'created_utc':...logy and its impact.', 'created_utc': datetime.datetime(2025, 5, 28, 20, 12, 6, 421635), 'num_comments': 15, ...}, ...]
+
+    def test_create_trending_topics(self, visualizer, sample_mentions_list):
+        """Test trending topics visualization."""
+        # Add keywords to titles
+        keywords = ['AI', 'machine learning', 'neural networks', 'deep learning']
+        for i, mention in enumerate(sample_mentions_list):
+            mention['title'] = f"Post about {keywords[i % len(keywords)]} technology"
+    
+&gt;       fig = visualizer.create_trending_topics(sample_mentions_list)
+E       AttributeError: 'MetricsVisualizer' object has no attribute 'create_trending_topics'
+
+tests\test_ui.py:75: AttributeError</failure></testcase><testcase classname="tests.test_ui.TestMetricsVisualizer" name="test_create_quality_metrics" time="0.001"><failure message="AttributeError: 'MetricsVisualizer' object has no attribute 'create_quality_metrics'">self = &lt;tests.test_ui.TestMetricsVisualizer object at 0x000001356F9CECC0&gt;
+visualizer = &lt;ui.visualization.MetricsVisualizer object at 0x0000013573BE9430&gt;
+sample_mentions_list = [{'author': 'test_user', 'content': 'This is a test post discussing OpenAI technology and its impact.', 'created_utc':...logy and its impact.', 'created_utc': datetime.datetime(2025, 5, 28, 20, 12, 6, 434635), 'num_comments': 15, ...}, ...]
+
+    def test_create_quality_metrics(self, visualizer, sample_mentions_list):
+        """Test quality metrics visualization."""
+        # Add quality scores
+        for mention in sample_mentions_list:
+            mention['relevance_score'] = 0.8
+            mention['quality_score'] = 0.7
+    
+&gt;       fig = visualizer.create_quality_metrics(sample_mentions_list)
+E       AttributeError: 'MetricsVisualizer' object has no attribute 'create_quality_metrics'
+
+tests\test_ui.py:88: AttributeError</failure></testcase><testcase classname="tests.test_ui.TestMetricsVisualizer" name="test_create_comprehensive_dashboard" time="0.001"><failure message="AttributeError: 'MetricsVisualizer' object has no attribute 'create_comprehensive_dashboard'">self = &lt;tests.test_ui.TestMetricsVisualizer object at 0x000001356F9CEEA0&gt;
+visualizer = &lt;ui.visualization.MetricsVisualizer object at 0x0000013573BECC80&gt;
+sample_mentions_list = [{'author': 'test_user', 'content': 'This is a test post discussing OpenAI technology and its impact.', 'created_utc':...logy and its impact.', 'created_utc': datetime.datetime(2025, 5, 28, 15, 12, 6, 448636), 'num_comments': 15, ...}, ...]
+
+    def test_create_comprehensive_dashboard(self, visualizer, sample_mentions_list):
+        """Test comprehensive dashboard creation."""
+        # Add required fields
+        now = datetime.utcnow()
+        subreddits = ['technology', 'programming', 'artificial']
+    
+        for i, mention in enumerate(sample_mentions_list):
+            mention['created_utc'] = now - timedelta(hours=i)
+            mention['subreddit'] = subreddits[i % len(subreddits)]
+            mention['relevance_score'] = 0.8
+            mention['quality_score'] = 0.7
+    
+&gt;       dashboard = visualizer.create_comprehensive_dashboard(sample_mentions_list)
+E       AttributeError: 'MetricsVisualizer' object has no attribute 'create_comprehensive_dashboard'
+
+tests\test_ui.py:106: AttributeError</failure></testcase><testcase classname="tests.test_ui.TestMetricsVisualizer" name="test_empty_data_handling" time="0.001"><failure message="AttributeError: 'MetricsVisualizer' object has no attribute 'create_mentions_timeline'">self = &lt;tests.test_ui.TestMetricsVisualizer object at 0x000001356F9CF080&gt;
+visualizer = &lt;ui.visualization.MetricsVisualizer object at 0x0000013573391D30&gt;
+
+    def test_empty_data_handling(self, visualizer):
+        """Test handling of empty data."""
+        empty_mentions = []
+    
+        # Should handle empty data gracefully
+&gt;       fig = visualizer.create_mentions_timeline(empty_mentions)
+E       AttributeError: 'MetricsVisualizer' object has no attribute 'create_mentions_timeline'
+
+tests\test_ui.py:123: AttributeError</failure></testcase><testcase classname="tests.test_ui.TestMetricsVisualizer" name="test_malformed_data_handling" time="0.001"><failure message="AttributeError: 'MetricsVisualizer' object has no attribute 'create_sentiment_distribution'">self = &lt;tests.test_ui.TestMetricsVisualizer object at 0x000001356F9CF260&gt;
+visualizer = &lt;ui.visualization.MetricsVisualizer object at 0x000001357338EC00&gt;
+
+    def test_malformed_data_handling(self, visualizer):
+        """Test handling of malformed data."""
+        malformed_mentions = [
+            {'title': 'Valid post'},  # Missing fields
+            {'score': 'invalid'},  # Invalid data types
+            {},  # Empty mention
+            None  # None mention
+        ]
+    
+        # Should handle malformed data gracefully
+&gt;       fig = visualizer.create_sentiment_distribution(malformed_mentions)
+E       AttributeError: 'MetricsVisualizer' object has no attribute 'create_sentiment_distribution'
+
+tests\test_ui.py:143: AttributeError</failure></testcase><testcase classname="tests.test_ui.TestMetricsVisualizer" name="test_color_scheme_consistency" time="0.001"><failure message="AttributeError: 'MetricsVisualizer' object has no attribute 'create_comprehensive_dashboard'">self = &lt;tests.test_ui.TestMetricsVisualizer object at 0x000001356F9CF440&gt;
+visualizer = &lt;ui.visualization.MetricsVisualizer object at 0x00000135732CE900&gt;
+sample_mentions_list = [{'author': 'test_user', 'content': 'This is a test post discussing OpenAI technology and its impact.', 'created_utc':...logy and its impact.', 'created_utc': datetime.datetime(2025, 5, 28, 20, 12, 6, 643636), 'num_comments': 15, ...}, ...]
+
+    def test_color_scheme_consistency(self, visualizer, sample_mentions_list):
+        """Test color scheme consistency across charts."""
+&gt;       dashboard = visualizer.create_comprehensive_dashboard(sample_mentions_list)
+E       AttributeError: 'MetricsVisualizer' object has no attribute 'create_comprehensive_dashboard'
+
+tests\test_ui.py:148: AttributeError</failure></testcase><testcase classname="tests.test_ui.TestMetricsVisualizer" name="test_chart_interactivity" time="0.001"><failure message="AttributeError: 'MetricsVisualizer' object has no attribute 'create_mentions_timeline'">self = &lt;tests.test_ui.TestMetricsVisualizer object at 0x000001356F9CF620&gt;
+visualizer = &lt;ui.visualization.MetricsVisualizer object at 0x00000135734B4BF0&gt;
+sample_mentions_list = [{'author': 'test_user', 'content': 'This is a test post discussing OpenAI technology and its impact.', 'created_utc':...logy and its impact.', 'created_utc': datetime.datetime(2025, 5, 28, 20, 12, 6, 656635), 'num_comments': 15, ...}, ...]
+
+    def test_chart_interactivity(self, visualizer, sample_mentions_list):
+        """Test chart interactivity features."""
+&gt;       fig = visualizer.create_mentions_timeline(sample_mentions_list)
+E       AttributeError: 'MetricsVisualizer' object has no attribute 'create_mentions_timeline'
+
+tests\test_ui.py:158: AttributeError</failure></testcase><testcase classname="tests.test_ui.TestMetricsVisualizer" name="test_responsive_design" time="0.001"><failure message="AttributeError: 'MetricsVisualizer' object has no attribute 'create_subreddit_breakdown'. Did you mean: 'create_subreddit_analysis'?">self = &lt;tests.test_ui.TestMetricsVisualizer object at 0x000001356F9CF800&gt;
+visualizer = &lt;ui.visualization.MetricsVisualizer object at 0x0000013575636360&gt;
+sample_mentions_list = [{'author': 'test_user', 'content': 'This is a test post discussing OpenAI technology and its impact.', 'created_utc':...logy and its impact.', 'created_utc': datetime.datetime(2025, 5, 28, 20, 12, 6, 668635), 'num_comments': 15, ...}, ...]
+
+    def test_responsive_design(self, visualizer, sample_mentions_list):
+        """Test responsive design features."""
+&gt;       fig = visualizer.create_subreddit_breakdown(sample_mentions_list)
+E       AttributeError: 'MetricsVisualizer' object has no attribute 'create_subreddit_breakdown'. Did you mean: 'create_subreddit_analysis'?
+
+tests\test_ui.py:166: AttributeError</failure></testcase><testcase classname="tests.test_ui.TestRealtimeMonitor" name="test_monitor_initialization" time="0.001"><failure message="AssertionError: assert False&#10; +  where False = hasattr(&lt;ui.realtime_monitor.RealTimeMonitor object at 0x000001357563D460&gt;, 'system_monitor')">self = &lt;tests.test_ui.TestRealtimeMonitor object at 0x000001356F9CFAA0&gt;
+realtime_monitor = &lt;ui.realtime_monitor.RealTimeMonitor object at 0x000001357563D460&gt;
+
+    def test_monitor_initialization(self, realtime_monitor):
+        """Test monitor initialization."""
+        assert realtime_monitor is not None
+&gt;       assert hasattr(realtime_monitor, 'system_monitor')
+E       AssertionError: assert False
+E        +  where False = hasattr(&lt;ui.realtime_monitor.RealTimeMonitor object at 0x000001357563D460&gt;, 'system_monitor')
+
+tests\test_ui.py:184: AssertionError</failure></testcase><testcase classname="tests.test_ui.TestRealtimeMonitor" name="test_get_system_status" time="0.001"><failure message="AttributeError: 'RealTimeMonitor' object has no attribute 'get_system_status'. Did you mean: 'emit_system_status'?">self = &lt;tests.test_ui.TestRealtimeMonitor object at 0x000001356F9CFC80&gt;
+realtime_monitor = &lt;ui.realtime_monitor.RealTimeMonitor object at 0x0000013573529010&gt;
+
+    def test_get_system_status(self, realtime_monitor):
+        """Test system status retrieval."""
+&gt;       status = realtime_monitor.get_system_status()
+E       AttributeError: 'RealTimeMonitor' object has no attribute 'get_system_status'. Did you mean: 'emit_system_status'?
+
+tests\test_ui.py:189: AttributeError</failure></testcase><testcase classname="tests.test_ui.TestRealtimeMonitor" name="test_get_scraping_metrics" time="0.001"><failure message="AttributeError: 'RealTimeMonitor' object has no attribute 'get_scraping_metrics'">self = &lt;tests.test_ui.TestRealtimeMonitor object at 0x000001356F9CFE60&gt;
+realtime_monitor = &lt;ui.realtime_monitor.RealTimeMonitor object at 0x0000013575644AD0&gt;
+
+    def test_get_scraping_metrics(self, realtime_monitor):
+        """Test scraping metrics retrieval."""
+&gt;       metrics = realtime_monitor.get_scraping_metrics()
+E       AttributeError: 'RealTimeMonitor' object has no attribute 'get_scraping_metrics'
+
+tests\test_ui.py:205: AttributeError</failure></testcase><testcase classname="tests.test_ui.TestRealtimeMonitor" name="test_get_database_metrics" time="0.001"><failure message="AttributeError: 'RealTimeMonitor' object has no attribute 'get_database_metrics'">self = &lt;tests.test_ui.TestRealtimeMonitor object at 0x000001356FA10080&gt;
+realtime_monitor = &lt;ui.realtime_monitor.RealTimeMonitor object at 0x0000013575633230&gt;
+
+    def test_get_database_metrics(self, realtime_monitor):
+        """Test database metrics retrieval."""
+&gt;       metrics = realtime_monitor.get_database_metrics()
+E       AttributeError: 'RealTimeMonitor' object has no attribute 'get_database_metrics'
+
+tests\test_ui.py:216: AttributeError</failure></testcase><testcase classname="tests.test_ui.TestRealtimeMonitor" name="test_create_system_dashboard" time="0.001"><failure message="AttributeError: 'RealTimeMonitor' object has no attribute 'create_system_dashboard'">self = &lt;tests.test_ui.TestRealtimeMonitor object at 0x000001356FA10260&gt;
+realtime_monitor = &lt;ui.realtime_monitor.RealTimeMonitor object at 0x00000135756278F0&gt;
+
+    def test_create_system_dashboard(self, realtime_monitor):
+        """Test system dashboard creation."""
+&gt;       dashboard = realtime_monitor.create_system_dashboard()
+E       AttributeError: 'RealTimeMonitor' object has no attribute 'create_system_dashboard'
+
+tests\test_ui.py:226: AttributeError</failure></testcase><testcase classname="tests.test_ui.TestRealtimeMonitor" name="test_create_performance_dashboard" time="0.001"><failure message="AttributeError: 'RealTimeMonitor' object has no attribute 'create_performance_dashboard'">self = &lt;tests.test_ui.TestRealtimeMonitor object at 0x000001356FA10440&gt;
+realtime_monitor = &lt;ui.realtime_monitor.RealTimeMonitor object at 0x00000135756266C0&gt;
+
+    def test_create_performance_dashboard(self, realtime_monitor):
+        """Test performance dashboard creation."""
+&gt;       dashboard = realtime_monitor.create_performance_dashboard()
+E       AttributeError: 'RealTimeMonitor' object has no attribute 'create_performance_dashboard'
+
+tests\test_ui.py:239: AttributeError</failure></testcase><testcase classname="tests.test_ui.TestRealtimeMonitor" name="test_start_monitoring" time="0.002"><failure message="AttributeError: &lt;ui.realtime_monitor.RealTimeMonitor object at 0x0000013575623200&gt; does not have the attribute '_monitoring_loop'">self = &lt;tests.test_ui.TestRealtimeMonitor object at 0x000001356FA10620&gt;
+realtime_monitor = &lt;ui.realtime_monitor.RealTimeMonitor object at 0x0000013575623200&gt;
+
+    @pytest.mark.asyncio
+    async def test_start_monitoring(self, realtime_monitor):
+        """Test monitoring start functionality."""
+        # Mock the monitoring loop to avoid infinite loop
+&gt;       with patch.object(realtime_monitor, '_monitoring_loop') as mock_loop:
+
+tests\test_ui.py:253: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+C:\Program Files\Python312\Lib\unittest\mock.py:1455: in __enter__
+    original, local = self.get_original()
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = &lt;unittest.mock._patch object at 0x0000013575620260&gt;
+
+    def get_original(self):
+        target = self.getter()
+        name = self.attribute
+    
+        original = DEFAULT
+        local = False
+    
+        try:
+            original = target.__dict__[name]
+        except (AttributeError, KeyError):
+            original = getattr(target, name, DEFAULT)
+        else:
+            local = True
+    
+        if name in _builtins and isinstance(target, ModuleType):
+            self.create = True
+    
+        if not self.create and original is DEFAULT:
+&gt;           raise AttributeError(
+                "%s does not have the attribute %r" % (target, name)
+            )
+E           AttributeError: &lt;ui.realtime_monitor.RealTimeMonitor object at 0x0000013575623200&gt; does not have the attribute '_monitoring_loop'
+
+C:\Program Files\Python312\Lib\unittest\mock.py:1428: AttributeError</failure></testcase><testcase classname="tests.test_ui.TestRealtimeMonitor" name="test_stop_monitoring" time="0.001"><failure message="AttributeError: 'RealTimeMonitor' object has no attribute 'stop_monitoring'. Did you mean: 'is_monitoring'?">self = &lt;tests.test_ui.TestRealtimeMonitor object at 0x000001356FA10800&gt;
+realtime_monitor = &lt;ui.realtime_monitor.RealTimeMonitor object at 0x0000013575626AB0&gt;
+
+    def test_stop_monitoring(self, realtime_monitor):
+        """Test monitoring stop functionality."""
+        # Start monitoring first
+        realtime_monitor.is_monitoring = True
+    
+&gt;       realtime_monitor.stop_monitoring()
+E       AttributeError: 'RealTimeMonitor' object has no attribute 'stop_monitoring'. Did you mean: 'is_monitoring'?
+
+tests\test_ui.py:266: AttributeError</failure></testcase><testcase classname="tests.test_ui.TestRealtimeMonitor" name="test_alert_system" time="0.001"><failure message="AttributeError: 'RealTimeMonitor' object has no attribute '_check_alerts'">self = &lt;tests.test_ui.TestRealtimeMonitor object at 0x000001356FA109E0&gt;
+realtime_monitor = &lt;ui.realtime_monitor.RealTimeMonitor object at 0x0000013575632ED0&gt;
+
+    def test_alert_system(self, realtime_monitor):
+        """Test alert system functionality."""
+        # Test high CPU alert
+        high_cpu_status = {
+            'cpu_usage': 95.0,
+            'memory_usage': 50.0,
+            'disk_usage': 30.0,
+            'timestamp': datetime.utcnow()
+        }
+    
+&gt;       alerts = realtime_monitor._check_alerts(high_cpu_status)
+E       AttributeError: 'RealTimeMonitor' object has no attribute '_check_alerts'
+
+tests\test_ui.py:280: AttributeError</failure></testcase><testcase classname="tests.test_ui.TestRealtimeMonitor" name="test_metrics_history" time="0.001"><failure message="AttributeError: 'RealTimeMonitor' object has no attribute '_add_to_history'">self = &lt;tests.test_ui.TestRealtimeMonitor object at 0x000001356F9CFBF0&gt;
+realtime_monitor = &lt;ui.realtime_monitor.RealTimeMonitor object at 0x0000013575645850&gt;
+
+    def test_metrics_history(self, realtime_monitor):
+        """Test metrics history tracking."""
+        # Add some metrics to history
+        for i in range(5):
+            status = {
+                'cpu_usage': 50.0 + i,
+                'memory_usage': 60.0 + i,
+                'timestamp': datetime.utcnow() - timedelta(minutes=i)
+            }
+&gt;           realtime_monitor._add_to_history(status)
+E           AttributeError: 'RealTimeMonitor' object has no attribute '_add_to_history'
+
+tests\test_ui.py:296: AttributeError</failure></testcase><testcase classname="tests.test_ui.TestGradioInterface" name="test_interface_creation" time="0.125"><failure message="AttributeError: &lt;module 'app' from 'C:\\Users\\Devansh\\Downloads\\intern_application_round1\\app.py'&gt; does not have the attribute 'create_gradio_interface'">self = &lt;tests.test_ui.TestGradioInterface object at 0x000001356F9CF530&gt;
+mock_app_components = {'db_manager': &lt;Mock id='1329114369392'&gt;, 'metrics_analyzer': &lt;Mock id='1329079534032'&gt;, 'realtime_monitor': &lt;Mock id='1329079547568'&gt;, 'scraper': &lt;Mock id='1329114369632'&gt;, ...}
+
+    def test_interface_creation(self, mock_app_components):
+        """Test Gradio interface creation."""
+&gt;       with patch('app.create_gradio_interface') as mock_create:
+
+tests\test_ui.py:324: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+C:\Program Files\Python312\Lib\unittest\mock.py:1455: in __enter__
+    original, local = self.get_original()
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = &lt;unittest.mock._patch object at 0x000001357563C800&gt;
+
+    def get_original(self):
+        target = self.getter()
+        name = self.attribute
+    
+        original = DEFAULT
+        local = False
+    
+        try:
+            original = target.__dict__[name]
+        except (AttributeError, KeyError):
+            original = getattr(target, name, DEFAULT)
+        else:
+            local = True
+    
+        if name in _builtins and isinstance(target, ModuleType):
+            self.create = True
+    
+        if not self.create and original is DEFAULT:
+&gt;           raise AttributeError(
+                "%s does not have the attribute %r" % (target, name)
+            )
+E           AttributeError: &lt;module 'app' from 'C:\\Users\\Devansh\\Downloads\\intern_application_round1\\app.py'&gt; does not have the attribute 'create_gradio_interface'
+
+C:\Program Files\Python312\Lib\unittest\mock.py:1428: AttributeError</failure></testcase><testcase classname="tests.test_ui.TestGradioInterface" name="test_search_functionality" time="0.001"><failure message="AttributeError: &lt;module 'app' from 'C:\\Users\\Devansh\\Downloads\\intern_application_round1\\app.py'&gt; does not have the attribute 'search_mentions'">self = &lt;tests.test_ui.TestGradioInterface object at 0x000001356F9CEE10&gt;
+mock_app_components = {'db_manager': &lt;Mock id='1329053350512'&gt;, 'metrics_analyzer': &lt;Mock id='1329053350608'&gt;, 'realtime_monitor': &lt;Mock id='1329053350704'&gt;, 'scraper': &lt;Mock id='1329053350416'&gt;, ...}
+
+    def test_search_functionality(self, mock_app_components):
+        """Test search functionality in UI."""
+        # Mock scraper response
+        mock_mentions = [
+            {'reddit_id': 'test1', 'title': 'Test post 1', 'score': 10},
+            {'reddit_id': 'test2', 'title': 'Test post 2', 'score': 20}
+        ]
+    
+        mock_app_components['scraper'].scrape_mentions = AsyncMock(return_value=mock_mentions)
+        mock_app_components['metrics_analyzer'].generate_comprehensive_metrics.return_value = {
+            'basic': {'total_mentions': 2}
+        }
+    
+        # Test search function
+&gt;       with patch('app.search_mentions') as mock_search:
+
+tests\test_ui.py:346: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+C:\Program Files\Python312\Lib\unittest\mock.py:1455: in __enter__
+    original, local = self.get_original()
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = &lt;unittest.mock._patch object at 0x0000013576E509B0&gt;
+
+    def get_original(self):
+        target = self.getter()
+        name = self.attribute
+    
+        original = DEFAULT
+        local = False
+    
+        try:
+            original = target.__dict__[name]
+        except (AttributeError, KeyError):
+            original = getattr(target, name, DEFAULT)
+        else:
+            local = True
+    
+        if name in _builtins and isinstance(target, ModuleType):
+            self.create = True
+    
+        if not self.create and original is DEFAULT:
+&gt;           raise AttributeError(
+                "%s does not have the attribute %r" % (target, name)
+            )
+E           AttributeError: &lt;module 'app' from 'C:\\Users\\Devansh\\Downloads\\intern_application_round1\\app.py'&gt; does not have the attribute 'search_mentions'
+
+C:\Program Files\Python312\Lib\unittest\mock.py:1428: AttributeError</failure></testcase><testcase classname="tests.test_ui.TestGradioInterface" name="test_export_functionality" time="0.001"><failure message="AttributeError: &lt;module 'app' from 'C:\\Users\\Devansh\\Downloads\\intern_application_round1\\app.py'&gt; does not have the attribute 'export_data'">self = &lt;tests.test_ui.TestGradioInterface object at 0x000001356F9CE750&gt;
+mock_app_components = {'db_manager': &lt;Mock id='1329139618240'&gt;, 'metrics_analyzer': &lt;Mock id='1329139619488'&gt;, 'realtime_monitor': &lt;Mock id='1329139619680'&gt;, 'scraper': &lt;Mock id='1329139619344'&gt;, ...}
+
+    def test_export_functionality(self, mock_app_components):
+        """Test data export functionality."""
+        mock_mentions = [
+            {'reddit_id': 'test1', 'title': 'Test post 1', 'score': 10},
+            {'reddit_id': 'test2', 'title': 'Test post 2', 'score': 20}
+        ]
+    
+&gt;       with patch('app.export_data') as mock_export:
+
+tests\test_ui.py:361: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+C:\Program Files\Python312\Lib\unittest\mock.py:1455: in __enter__
+    original, local = self.get_original()
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = &lt;unittest.mock._patch object at 0x0000013576E51790&gt;
+
+    def get_original(self):
+        target = self.getter()
+        name = self.attribute
+    
+        original = DEFAULT
+        local = False
+    
+        try:
+            original = target.__dict__[name]
+        except (AttributeError, KeyError):
+            original = getattr(target, name, DEFAULT)
+        else:
+            local = True
+    
+        if name in _builtins and isinstance(target, ModuleType):
+            self.create = True
+    
+        if not self.create and original is DEFAULT:
+&gt;           raise AttributeError(
+                "%s does not have the attribute %r" % (target, name)
+            )
+E           AttributeError: &lt;module 'app' from 'C:\\Users\\Devansh\\Downloads\\intern_application_round1\\app.py'&gt; does not have the attribute 'export_data'
+
+C:\Program Files\Python312\Lib\unittest\mock.py:1428: AttributeError</failure></testcase><testcase classname="tests.test_ui.TestGradioInterface" name="test_real_time_updates" time="0.001"><failure message="AttributeError: &lt;module 'app' from 'C:\\Users\\Devansh\\Downloads\\intern_application_round1\\app.py'&gt; does not have the attribute 'update_realtime_metrics'">self = &lt;tests.test_ui.TestGradioInterface object at 0x000001356FA107A0&gt;
+mock_app_components = {'db_manager': &lt;Mock id='1329139622560'&gt;, 'metrics_analyzer': &lt;Mock id='1329139622752'&gt;, 'realtime_monitor': &lt;Mock id='1329139623088'&gt;, 'scraper': &lt;Mock id='1329139622896'&gt;, ...}
+
+    def test_real_time_updates(self, mock_app_components):
+        """Test real-time updates functionality."""
+        mock_status = {
+            'cpu_usage': 45.0,
+            'memory_usage': 60.0,
+            'active_sessions': 3
+        }
+    
+        mock_app_components['realtime_monitor'].get_system_status.return_value = mock_status
+    
+&gt;       with patch('app.update_realtime_metrics') as mock_update:
+
+tests\test_ui.py:379: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+C:\Program Files\Python312\Lib\unittest\mock.py:1455: in __enter__
+    original, local = self.get_original()
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = &lt;unittest.mock._patch object at 0x0000013576E522D0&gt;
+
+    def get_original(self):
+        target = self.getter()
+        name = self.attribute
+    
+        original = DEFAULT
+        local = False
+    
+        try:
+            original = target.__dict__[name]
+        except (AttributeError, KeyError):
+            original = getattr(target, name, DEFAULT)
+        else:
+            local = True
+    
+        if name in _builtins and isinstance(target, ModuleType):
+            self.create = True
+    
+        if not self.create and original is DEFAULT:
+&gt;           raise AttributeError(
+                "%s does not have the attribute %r" % (target, name)
+            )
+E           AttributeError: &lt;module 'app' from 'C:\\Users\\Devansh\\Downloads\\intern_application_round1\\app.py'&gt; does not have the attribute 'update_realtime_metrics'
+
+C:\Program Files\Python312\Lib\unittest\mock.py:1428: AttributeError</failure></testcase><testcase classname="tests.test_ui.TestGradioInterface" name="test_error_handling_in_ui" time="0.001"><failure message="AttributeError: &lt;module 'app' from 'C:\\Users\\Devansh\\Downloads\\intern_application_round1\\app.py'&gt; does not have the attribute 'search_mentions'">self = &lt;tests.test_ui.TestGradioInterface object at 0x000001356FA10170&gt;
+mock_app_components = {'db_manager': &lt;Mock id='1329139627072'&gt;, 'metrics_analyzer': &lt;Mock id='1329139627120'&gt;, 'realtime_monitor': &lt;Mock id='1329139627024'&gt;, 'scraper': &lt;Mock id='1329139627888'&gt;, ...}
+
+    def test_error_handling_in_ui(self, mock_app_components):
+        """Test error handling in UI components."""
+        # Mock scraper to raise an error
+        mock_app_components['scraper'].scrape_mentions = AsyncMock(
+            side_effect=Exception("Scraping error")
+        )
+    
+&gt;       with patch('app.search_mentions') as mock_search:
+
+tests\test_ui.py:393: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+C:\Program Files\Python312\Lib\unittest\mock.py:1455: in __enter__
+    original, local = self.get_original()
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = &lt;unittest.mock._patch object at 0x0000013576E2C410&gt;
+
+    def get_original(self):
+        target = self.getter()
+        name = self.attribute
+    
+        original = DEFAULT
+        local = False
+    
+        try:
+            original = target.__dict__[name]
+        except (AttributeError, KeyError):
+            original = getattr(target, name, DEFAULT)
+        else:
+            local = True
+    
+        if name in _builtins and isinstance(target, ModuleType):
+            self.create = True
+    
+        if not self.create and original is DEFAULT:
+&gt;           raise AttributeError(
+                "%s does not have the attribute %r" % (target, name)
+            )
+E           AttributeError: &lt;module 'app' from 'C:\\Users\\Devansh\\Downloads\\intern_application_round1\\app.py'&gt; does not have the attribute 'search_mentions'
+
+C:\Program Files\Python312\Lib\unittest\mock.py:1428: AttributeError</failure></testcase><testcase classname="tests.test_ui.TestGradioInterface" name="test_input_validation" time="0.001"><failure message="AttributeError: &lt;module 'app' from 'C:\\Users\\Devansh\\Downloads\\intern_application_round1\\app.py'&gt; does not have the attribute 'validate_search_input'">self = &lt;tests.test_ui.TestGradioInterface object at 0x000001356FA10C80&gt;
+mock_app_components = {'db_manager': &lt;Mock id='1329139470160'&gt;, 'metrics_analyzer': &lt;Mock id='1329139470448'&gt;, 'realtime_monitor': &lt;Mock id='1329139470304'&gt;, 'scraper': &lt;Mock id='1329139470592'&gt;, ...}
+
+    def test_input_validation(self, mock_app_components):
+        """Test input validation in UI."""
+&gt;       with patch('app.validate_search_input') as mock_validate:
+
+tests\test_ui.py:404: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+C:\Program Files\Python312\Lib\unittest\mock.py:1455: in __enter__
+    original, local = self.get_original()
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = &lt;unittest.mock._patch object at 0x0000013576E2CE60&gt;
+
+    def get_original(self):
+        target = self.getter()
+        name = self.attribute
+    
+        original = DEFAULT
+        local = False
+    
+        try:
+            original = target.__dict__[name]
+        except (AttributeError, KeyError):
+            original = getattr(target, name, DEFAULT)
+        else:
+            local = True
+    
+        if name in _builtins and isinstance(target, ModuleType):
+            self.create = True
+    
+        if not self.create and original is DEFAULT:
+&gt;           raise AttributeError(
+                "%s does not have the attribute %r" % (target, name)
+            )
+E           AttributeError: &lt;module 'app' from 'C:\\Users\\Devansh\\Downloads\\intern_application_round1\\app.py'&gt; does not have the attribute 'validate_search_input'
+
+C:\Program Files\Python312\Lib\unittest\mock.py:1428: AttributeError</failure></testcase><testcase classname="tests.test_ui.TestGradioInterface" name="test_progress_tracking" time="0.001"><failure message="AttributeError: &lt;module 'app' from 'C:\\Users\\Devansh\\Downloads\\intern_application_round1\\app.py'&gt; does not have the attribute 'track_progress'">self = &lt;tests.test_ui.TestGradioInterface object at 0x000001356FA10E60&gt;
+mock_app_components = {'db_manager': &lt;Mock id='1329139475536'&gt;, 'metrics_analyzer': &lt;Mock id='1329139474768'&gt;, 'realtime_monitor': &lt;Mock id='1329139473664'&gt;, 'scraper': &lt;Mock id='1329139474480'&gt;, ...}
+
+    def test_progress_tracking(self, mock_app_components):
+        """Test progress tracking in UI."""
+&gt;       with patch('app.track_progress') as mock_progress:
+
+tests\test_ui.py:418: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+C:\Program Files\Python312\Lib\unittest\mock.py:1455: in __enter__
+    original, local = self.get_original()
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = &lt;unittest.mock._patch object at 0x0000013576E2DDC0&gt;
+
+    def get_original(self):
+        target = self.getter()
+        name = self.attribute
+    
+        original = DEFAULT
+        local = False
+    
+        try:
+            original = target.__dict__[name]
+        except (AttributeError, KeyError):
+            original = getattr(target, name, DEFAULT)
+        else:
+            local = True
+    
+        if name in _builtins and isinstance(target, ModuleType):
+            self.create = True
+    
+        if not self.create and original is DEFAULT:
+&gt;           raise AttributeError(
+                "%s does not have the attribute %r" % (target, name)
+            )
+E           AttributeError: &lt;module 'app' from 'C:\\Users\\Devansh\\Downloads\\intern_application_round1\\app.py'&gt; does not have the attribute 'track_progress'
+
+C:\Program Files\Python312\Lib\unittest\mock.py:1428: AttributeError</failure></testcase><testcase classname="tests.test_ui.TestUIIntegration" name="test_full_ui_workflow" time="0.000"><error message="failed on setup with &quot;file C:\Users\Devansh\Downloads\intern_application_round1\tests\test_ui.py, line 436&#10;      def test_full_ui_workflow(self, mock_app_components, sample_mentions_list):&#10;E       fixture 'mock_app_components' not found&#10;&gt;       available fixtures: anyio_backend, anyio_backend_name, anyio_backend_options, async_test_client, cache, capfd, capfdbinary, caplog, capsys, capsysbinary, cov, data_validator, db_manager, doctest_namespace, event_loop, extra, extras, include_metadata_in_junit_xml, metadata, metrics_analyzer, mock_browser_context, mock_playwright_page, mock_redis, mock_requests, mock_textblob, monkeypatch, no_cover, performance_monitor, pytestconfig, record_property, record_testsuite_property, record_xml_attribute, recwarn, sample_mention_data, sample_mentions_list, temp_database, test_config, test_data_generator, testrun_uid, tmp_path, tmp_path_factory, tmpdir, tmpdir_factory, unused_tcp_port, unused_tcp_port_factory, unused_udp_port, unused_udp_port_factory, visualizer, worker_id&#10;&gt;       use 'pytest --fixtures [testpath]' for help on them.&#10;&#10;C:\Users\Devansh\Downloads\intern_application_round1\tests\test_ui.py:436&quot;">file C:\Users\Devansh\Downloads\intern_application_round1\tests\test_ui.py, line 436
+      def test_full_ui_workflow(self, mock_app_components, sample_mentions_list):
+E       fixture 'mock_app_components' not found
+&gt;       available fixtures: anyio_backend, anyio_backend_name, anyio_backend_options, async_test_client, cache, capfd, capfdbinary, caplog, capsys, capsysbinary, cov, data_validator, db_manager, doctest_namespace, event_loop, extra, extras, include_metadata_in_junit_xml, metadata, metrics_analyzer, mock_browser_context, mock_playwright_page, mock_redis, mock_requests, mock_textblob, monkeypatch, no_cover, performance_monitor, pytestconfig, record_property, record_testsuite_property, record_xml_attribute, recwarn, sample_mention_data, sample_mentions_list, temp_database, test_config, test_data_generator, testrun_uid, tmp_path, tmp_path_factory, tmpdir, tmpdir_factory, unused_tcp_port, unused_tcp_port_factory, unused_udp_port, unused_udp_port_factory, visualizer, worker_id
+&gt;       use 'pytest --fixtures [testpath]' for help on them.
+
+C:\Users\Devansh\Downloads\intern_application_round1\tests\test_ui.py:436</error></testcase><testcase classname="tests.test_ui.TestUIIntegration" name="test_ui_performance_with_large_dataset" time="0.000"><error message="failed on setup with &quot;file C:\Users\Devansh\Downloads\intern_application_round1\tests\test_ui.py, line 467&#10;      def test_ui_performance_with_large_dataset(self, mock_app_components, performance_monitor):&#10;E       fixture 'mock_app_components' not found&#10;&gt;       available fixtures: anyio_backend, anyio_backend_name, anyio_backend_options, async_test_client, cache, capfd, capfdbinary, caplog, capsys, capsysbinary, cov, data_validator, db_manager, doctest_namespace, event_loop, extra, extras, include_metadata_in_junit_xml, metadata, metrics_analyzer, mock_browser_context, mock_playwright_page, mock_redis, mock_requests, mock_textblob, monkeypatch, no_cover, performance_monitor, pytestconfig, record_property, record_testsuite_property, record_xml_attribute, recwarn, sample_mention_data, sample_mentions_list, temp_database, test_config, test_data_generator, testrun_uid, tmp_path, tmp_path_factory, tmpdir, tmpdir_factory, unused_tcp_port, unused_tcp_port_factory, unused_udp_port, unused_udp_port_factory, visualizer, worker_id&#10;&gt;       use 'pytest --fixtures [testpath]' for help on them.&#10;&#10;C:\Users\Devansh\Downloads\intern_application_round1\tests\test_ui.py:467&quot;">file C:\Users\Devansh\Downloads\intern_application_round1\tests\test_ui.py, line 467
+      def test_ui_performance_with_large_dataset(self, mock_app_components, performance_monitor):
+E       fixture 'mock_app_components' not found
+&gt;       available fixtures: anyio_backend, anyio_backend_name, anyio_backend_options, async_test_client, cache, capfd, capfdbinary, caplog, capsys, capsysbinary, cov, data_validator, db_manager, doctest_namespace, event_loop, extra, extras, include_metadata_in_junit_xml, metadata, metrics_analyzer, mock_browser_context, mock_playwright_page, mock_redis, mock_requests, mock_textblob, monkeypatch, no_cover, performance_monitor, pytestconfig, record_property, record_testsuite_property, record_xml_attribute, recwarn, sample_mention_data, sample_mentions_list, temp_database, test_config, test_data_generator, testrun_uid, tmp_path, tmp_path_factory, tmpdir, tmpdir_factory, unused_tcp_port, unused_tcp_port_factory, unused_udp_port, unused_udp_port_factory, visualizer, worker_id
+&gt;       use 'pytest --fixtures [testpath]' for help on them.
+
+C:\Users\Devansh\Downloads\intern_application_round1\tests\test_ui.py:467</error></testcase><testcase classname="tests.test_ui.TestUIIntegration" name="test_concurrent_ui_operations" time="0.000"><error message="failed on setup with &quot;file C:\Users\Devansh\Downloads\intern_application_round1\tests\test_ui.py, line 503&#10;      def test_concurrent_ui_operations(self, mock_app_components):&#10;E       fixture 'mock_app_components' not found&#10;&gt;       available fixtures: anyio_backend, anyio_backend_name, anyio_backend_options, async_test_client, cache, capfd, capfdbinary, caplog, capsys, capsysbinary, cov, data_validator, db_manager, doctest_namespace, event_loop, extra, extras, include_metadata_in_junit_xml, metadata, metrics_analyzer, mock_browser_context, mock_playwright_page, mock_redis, mock_requests, mock_textblob, monkeypatch, no_cover, performance_monitor, pytestconfig, record_property, record_testsuite_property, record_xml_attribute, recwarn, sample_mention_data, sample_mentions_list, temp_database, test_config, test_data_generator, testrun_uid, tmp_path, tmp_path_factory, tmpdir, tmpdir_factory, unused_tcp_port, unused_tcp_port_factory, unused_udp_port, unused_udp_port_factory, visualizer, worker_id&#10;&gt;       use 'pytest --fixtures [testpath]' for help on them.&#10;&#10;C:\Users\Devansh\Downloads\intern_application_round1\tests\test_ui.py:503&quot;">file C:\Users\Devansh\Downloads\intern_application_round1\tests\test_ui.py, line 503
+      def test_concurrent_ui_operations(self, mock_app_components):
+E       fixture 'mock_app_components' not found
+&gt;       available fixtures: anyio_backend, anyio_backend_name, anyio_backend_options, async_test_client, cache, capfd, capfdbinary, caplog, capsys, capsysbinary, cov, data_validator, db_manager, doctest_namespace, event_loop, extra, extras, include_metadata_in_junit_xml, metadata, metrics_analyzer, mock_browser_context, mock_playwright_page, mock_redis, mock_requests, mock_textblob, monkeypatch, no_cover, performance_monitor, pytestconfig, record_property, record_testsuite_property, record_xml_attribute, recwarn, sample_mention_data, sample_mentions_list, temp_database, test_config, test_data_generator, testrun_uid, tmp_path, tmp_path_factory, tmpdir, tmpdir_factory, unused_tcp_port, unused_tcp_port_factory, unused_udp_port, unused_udp_port_factory, visualizer, worker_id
+&gt;       use 'pytest --fixtures [testpath]' for help on them.
+
+C:\Users\Devansh\Downloads\intern_application_round1\tests\test_ui.py:503</error></testcase><testcase classname="tests.test_ui.TestUIIntegration" name="test_ui_state_management" time="0.000"><error message="failed on setup with &quot;file C:\Users\Devansh\Downloads\intern_application_round1\tests\test_ui.py, line 532&#10;      def test_ui_state_management(self, mock_app_components):&#10;E       fixture 'mock_app_components' not found&#10;&gt;       available fixtures: anyio_backend, anyio_backend_name, anyio_backend_options, async_test_client, cache, capfd, capfdbinary, caplog, capsys, capsysbinary, cov, data_validator, db_manager, doctest_namespace, event_loop, extra, extras, include_metadata_in_junit_xml, metadata, metrics_analyzer, mock_browser_context, mock_playwright_page, mock_redis, mock_requests, mock_textblob, monkeypatch, no_cover, performance_monitor, pytestconfig, record_property, record_testsuite_property, record_xml_attribute, recwarn, sample_mention_data, sample_mentions_list, temp_database, test_config, test_data_generator, testrun_uid, tmp_path, tmp_path_factory, tmpdir, tmpdir_factory, unused_tcp_port, unused_tcp_port_factory, unused_udp_port, unused_udp_port_factory, visualizer, worker_id&#10;&gt;       use 'pytest --fixtures [testpath]' for help on them.&#10;&#10;C:\Users\Devansh\Downloads\intern_application_round1\tests\test_ui.py:532&quot;">file C:\Users\Devansh\Downloads\intern_application_round1\tests\test_ui.py, line 532
+      def test_ui_state_management(self, mock_app_components):
+E       fixture 'mock_app_components' not found
+&gt;       available fixtures: anyio_backend, anyio_backend_name, anyio_backend_options, async_test_client, cache, capfd, capfdbinary, caplog, capsys, capsysbinary, cov, data_validator, db_manager, doctest_namespace, event_loop, extra, extras, include_metadata_in_junit_xml, metadata, metrics_analyzer, mock_browser_context, mock_playwright_page, mock_redis, mock_requests, mock_textblob, monkeypatch, no_cover, performance_monitor, pytestconfig, record_property, record_testsuite_property, record_xml_attribute, recwarn, sample_mention_data, sample_mentions_list, temp_database, test_config, test_data_generator, testrun_uid, tmp_path, tmp_path_factory, tmpdir, tmpdir_factory, unused_tcp_port, unused_tcp_port_factory, unused_udp_port, unused_udp_port_factory, visualizer, worker_id
+&gt;       use 'pytest --fixtures [testpath]' for help on them.
+
+C:\Users\Devansh\Downloads\intern_application_round1\tests\test_ui.py:532</error></testcase><testcase classname="tests.test_ui.TestUIIntegration" name="test_ui_accessibility" time="0.000"><error message="failed on setup with &quot;file C:\Users\Devansh\Downloads\intern_application_round1\tests\test_ui.py, line 549&#10;      def test_ui_accessibility(self, mock_app_components):&#10;E       fixture 'mock_app_components' not found&#10;&gt;       available fixtures: anyio_backend, anyio_backend_name, anyio_backend_options, async_test_client, cache, capfd, capfdbinary, caplog, capsys, capsysbinary, cov, data_validator, db_manager, doctest_namespace, event_loop, extra, extras, include_metadata_in_junit_xml, metadata, metrics_analyzer, mock_browser_context, mock_playwright_page, mock_redis, mock_requests, mock_textblob, monkeypatch, no_cover, performance_monitor, pytestconfig, record_property, record_testsuite_property, record_xml_attribute, recwarn, sample_mention_data, sample_mentions_list, temp_database, test_config, test_data_generator, testrun_uid, tmp_path, tmp_path_factory, tmpdir, tmpdir_factory, unused_tcp_port, unused_tcp_port_factory, unused_udp_port, unused_udp_port_factory, visualizer, worker_id&#10;&gt;       use 'pytest --fixtures [testpath]' for help on them.&#10;&#10;C:\Users\Devansh\Downloads\intern_application_round1\tests\test_ui.py:549&quot;">file C:\Users\Devansh\Downloads\intern_application_round1\tests\test_ui.py, line 549
+      def test_ui_accessibility(self, mock_app_components):
+E       fixture 'mock_app_components' not found
+&gt;       available fixtures: anyio_backend, anyio_backend_name, anyio_backend_options, async_test_client, cache, capfd, capfdbinary, caplog, capsys, capsysbinary, cov, data_validator, db_manager, doctest_namespace, event_loop, extra, extras, include_metadata_in_junit_xml, metadata, metrics_analyzer, mock_browser_context, mock_playwright_page, mock_redis, mock_requests, mock_textblob, monkeypatch, no_cover, performance_monitor, pytestconfig, record_property, record_testsuite_property, record_xml_attribute, recwarn, sample_mention_data, sample_mentions_list, temp_database, test_config, test_data_generator, testrun_uid, tmp_path, tmp_path_factory, tmpdir, tmpdir_factory, unused_tcp_port, unused_tcp_port_factory, unused_udp_port, unused_udp_port_factory, visualizer, worker_id
+&gt;       use 'pytest --fixtures [testpath]' for help on them.
+
+C:\Users\Devansh\Downloads\intern_application_round1\tests\test_ui.py:549</error></testcase></testsuite></testsuites>

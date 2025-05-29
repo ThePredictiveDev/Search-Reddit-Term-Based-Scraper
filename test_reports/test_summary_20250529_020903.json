@@ -1,0 +1,27 @@
+{
+  "test_run": {
+    "timestamp": "20250529_020903",
+    "execution_time": 15.057520151138306,
+    "success": false,
+    "return_code": 1
+  },
+  "statistics": {
+    "total_tests": 12,
+    "passed": 0,
+    "failed": 0,
+    "skipped": 19,
+    "errors": 12,
+    "warnings": 7
+  },
+  "success_rate": 0.0,
+  "reports": {
+    "html": "test_report_20250529_020903.html",
+    "junit": "junit_report_20250529_020903.xml",
+    "coverage": "coverage_report_20250529_020903.html"
+  },
+  "environment": {
+    "python_version": "3.12.1 (tags/v3.12.1:2305ca5, Dec  7 2023, 22:03:25) [MSC v.1937 64 bit (AMD64)]",
+    "platform": "win32",
+    "working_directory": "C:\\Users\\Devansh\\Downloads\\intern_application_round1"
+  }
+}

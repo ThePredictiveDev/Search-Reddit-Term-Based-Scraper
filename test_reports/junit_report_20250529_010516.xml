@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites><testsuite name="pytest" errors="3" failures="2" skipped="0" tests="7" time="16.120" timestamp="2025-05-29T01:05:17.723433+05:30" hostname="DESKTOP-P3MSMOS"><testcase classname="" name="tests.test_ui" time="0.000"><error message="collection failure">ImportError while importing test module 'C:\Users\Devansh\Downloads\intern_application_round1\tests\test_ui.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+C:\Program Files\Python312\Lib\importlib\__init__.py:90: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+tests\test_ui.py:13: in &lt;module&gt;
+    from ui.realtime_monitor import RealtimeMonitor
+E   ImportError: cannot import name 'RealtimeMonitor' from 'ui.realtime_monitor' (C:\Users\Devansh\Downloads\intern_application_round1\ui\realtime_monitor.py). Did you mean: 'realtime_monitor'?</error></testcase><testcase classname="tests.test_database.TestDatabaseManager" name="test_database_initialization" time="0.028" /><testcase classname="tests.test_analytics.TestMetricsAnalyzer" name="test_calculate_basic_metrics" time="0.001"><error message="failed on setup with &quot;TypeError: MetricsAnalyzer.__init__() missing 1 required positional argument: 'db_manager'&quot;">@pytest.fixture
+    def metrics_analyzer():
+        """Metrics analyzer for testing."""
+        from analytics.metrics_analyzer import MetricsAnalyzer
+&gt;       return MetricsAnalyzer()
+E       TypeError: MetricsAnalyzer.__init__() missing 1 required positional argument: 'db_manager'
+
+tests\conftest.py:177: TypeError</error></testcase><testcase classname="tests.test_analytics.TestMetricsAnalyzer" name="test_analyzer_initialization" time="0.001"><error message="failed on setup with &quot;TypeError: MetricsAnalyzer.__init__() missing 1 required positional argument: 'db_manager'&quot;">@pytest.fixture
+    def metrics_analyzer():
+        """Metrics analyzer for testing."""
+        from analytics.metrics_analyzer import MetricsAnalyzer
+&gt;       return MetricsAnalyzer()
+E       TypeError: MetricsAnalyzer.__init__() missing 1 required positional argument: 'db_manager'
+
+tests\conftest.py:177: TypeError</error></testcase><testcase classname="tests.test_database.TestDatabaseManager" name="test_create_search_session" time="0.030"><failure message="assert False&#10; +  where False = isinstance(&lt;database.models.SearchSession object at 0x000001863FD05760&gt;, int)">self = &lt;tests.test_database.TestDatabaseManager object at 0x000001863AF12F00&gt;
+db_manager = &lt;database.models.DatabaseManager object at 0x000001863FD5DF40&gt;
+
+    @pytest.mark.smoke
+    def test_create_search_session(self, db_manager):
+        """Test creating search sessions."""
+        search_term = "OpenAI"
+        session_id = db_manager.create_search_session(search_term)
+    
+        assert session_id is not None
+&gt;       assert isinstance(session_id, int)
+E       assert False
+E        +  where False = isinstance(&lt;database.models.SearchSession object at 0x000001863FD05760&gt;, int)
+
+tests\test_database.py:36: AssertionError</failure></testcase><testcase classname="tests.test_scraper.TestRedditScraper" name="test_sanitize_search_term" time="0.051"><failure message="AssertionError: assert 'OpenAIscript' == 'OpenAI'&#10;  &#10;  - OpenAI&#10;  + OpenAIscript">self = &lt;tests.test_scraper.TestRedditScraper object at 0x0000021A01A9DEE0&gt;
+scraper = &lt;scraper.reddit_scraper.RedditScraper object at 0x0000021A052EDE80&gt;
+
+    @pytest.mark.smoke
+    def test_sanitize_search_term(self, scraper):
+        """Test search term sanitization."""
+        # Valid search terms
+        assert scraper._sanitize_search_term("OpenAI") == "OpenAI"
+        assert scraper._sanitize_search_term("  OpenAI  ") == "OpenAI"
+        assert scraper._sanitize_search_term("Open AI") == "Open AI"
+    
+        # Invalid search terms
+        assert scraper._sanitize_search_term("") == ""
+        assert scraper._sanitize_search_term("   ") == ""
+        assert scraper._sanitize_search_term(None) == ""
+    
+        # Dangerous characters
+&gt;       assert scraper._sanitize_search_term("OpenAI&lt;script&gt;") == "OpenAI"
+E       AssertionError: assert 'OpenAIscript' == 'OpenAI'
+E         
+E         - OpenAI
+E         + OpenAIscript
+
+tests\test_scraper.py:43: AssertionError</failure></testcase><testcase classname="tests.test_scraper.TestRedditScraper" name="test_scraper_initialization" time="0.054" /></testsuite></testsuites>

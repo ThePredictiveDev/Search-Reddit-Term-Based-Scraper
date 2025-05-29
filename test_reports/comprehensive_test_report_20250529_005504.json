@@ -1,0 +1,16 @@
+{
+  "timestamp": "2025-05-29T00:55:04.936205",
+  "execution_time": 20.995813608169556,
+  "total_tests": 0,
+  "total_passed": 0,
+  "total_failed": 0,
+  "success_rate": 0,
+  "overall_success": false,
+  "results": {
+    "smoke": {
+      "success": false,
+      "critical_failure": true
+    }
+  },
+  "system_status": "needs_attention"
+}
