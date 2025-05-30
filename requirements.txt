@@ -91,7 +91,7 @@ fastapi>=0.104.0  # For API endpoints
 structlog>=23.2.0
 
 # Configuration management  
-pydantic>=2.5.0
+pydantic==2.10.6
 pydantic_settings>=2.0.0
 python-dotenv>=1.0.0
 
