@@ -8,7 +8,7 @@ class LLMConfig:
     """Configuration class for LLM integration."""
     
     def __init__(self):
-        self.groq_api_key = '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'  # Replace with your actual valid Groq API key
+        self.groq_api_key = 'GROQ KEY'  # Replace with your actual valid Groq API key
         self.model_name = "deepseek-r1-distill-llama-70b"
         self.max_tokens = 4096
         self.temperature = 0.1
