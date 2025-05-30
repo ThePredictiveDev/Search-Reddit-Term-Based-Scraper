@@ -36,7 +36,7 @@ pytest>=7.0.0
 pytest-asyncio>=0.21.0
 
 # Optional advanced features (uncomment if needed)
-# redis>=5.0.0
+redis>=5.0.0
 # transformers>=4.36.0
 # torch>=2.1.0
 # langdetect>=1.0.0
@@ -46,7 +46,7 @@ pytest-asyncio>=0.21.0
 # Enhanced Reddit Mention Tracker Dependencies
 
 # Core web framework
-gradio>=4.0.0,<5.0.0
+gradio>=4.0.0
 
 # Data processing
 pandas>=2.0.0
@@ -92,6 +92,7 @@ structlog>=23.2.0
 
 # Configuration management  
 pydantic>=2.5.0
+pydantic_settings>=2.0.0
 python-dotenv>=1.0.0
 
 # Image processing (optional)
