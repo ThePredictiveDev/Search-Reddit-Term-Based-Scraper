@@ -2154,12 +2154,17 @@ class EnhancedRedditMentionTracker:
                             go.Figure()
                         )
                 
-                # Set up automatic status refresh with proper error handling
-                interface.load(
-                    auto_refresh_monitor,
-                    outputs=[system_status_detailed, alerts_html, performance_plot, resource_plot],
-                    every=30  # Refresh every 30 seconds
-                )
+                # Set up automatic status refresh with proper error handling - FIXED FOR GRADIO 4.x
+                try:
+                    interface.load(
+                        auto_refresh_monitor,
+                        outputs=[system_status_detailed, alerts_html, performance_plot, resource_plot],
+                        every=30  # Refresh every 30 seconds
+                    )
+                    print("   [OK] Auto-refresh enabled for system monitor (30 second interval)")
+                except Exception as refresh_error:
+                    print(f"   [WARN] Auto-refresh setup failed: {refresh_error}")
+                    print("   [INFO] System monitor will require manual refresh")
                 
                 print("   [SUCCESS] Gradio interface rebuilt with proper structure and output alignment!")
                 return interface
