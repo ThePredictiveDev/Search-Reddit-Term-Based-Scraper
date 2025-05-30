@@ -113,4 +113,30 @@ docs/_build/
 node_modules/
 npm-debug.log*
 yarn-debug.log*
-yarn-error.log* 
+yarn-error.log*
+
+# Sensitive data and credentials
+.env.local
+.env.production
+.env.staging
+*.key
+*.pem
+*.p12
+*.pfx
+config.json
+secrets.json
+credentials.json
+api_keys.txt
+
+# Database files with data
+*.db-journal
+*.db-wal
+*.db-shm
+data/
+backup/
+
+# Large model files
+models/
+*.model
+*.pkl
+*.joblib 
