@@ -72,6 +72,14 @@ except ImportError:
     REALTIME_MONITOR_AVAILABLE = False
     RealTimeMonitor = None
 
+# Optional LLM analyzer
+try:
+    from analytics.llm_analyzer import LLMAnalyzer
+    LLM_ANALYZER_AVAILABLE = True
+except ImportError:
+    LLM_ANALYZER_AVAILABLE = False
+    LLMAnalyzer = None
+
 class EnhancedRedditMentionTracker:
     """Enhanced Reddit Mention Tracker with advanced features."""
     
@@ -216,6 +224,17 @@ class EnhancedRedditMentionTracker:
         except Exception as e:
             print(f"[WARN] System monitor initialization failed: {e}")
             self.system_monitor = None
+        
+        print("[LLM] Initializing LLM analyzer...")
+        try:
+            self.llm_analyzer = LLMAnalyzer() if LLM_ANALYZER_AVAILABLE else None
+            if self.llm_analyzer and self.llm_analyzer.is_available():
+                print("[OK] LLM analyzer enabled with Groq API")
+            else:
+                print("[INFO] LLM analyzer disabled - no API key or package not available")
+        except Exception as e:
+            print(f"[WARN] LLM analyzer initialization failed: {e}")
+            self.llm_analyzer = None
         
         # Application state
         print("[STATE] Initializing application state...")
@@ -1098,6 +1117,43 @@ class EnhancedRedditMentionTracker:
                     min-height: 500px !important;
                     width: 100% !important;
                 }
+                .llm-results {
+                    background: #f8fafc;
+                    border-radius: 8px;
+                    padding: 15px;
+                    border: 1px solid #e2e8f0;
+                }
+                .llm-query-container {
+                    background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);
+                    border-radius: 12px;
+                    padding: 20px;
+                    margin: 10px 0;
+                }
+                .suggested-questions {
+                    background: #fefce8;
+                    border: 1px solid #eab308;
+                    border-radius: 8px;
+                    padding: 10px;
+                }
+                .llm-cot {
+                    background: linear-gradient(135deg, #f0f4ff 0%, #e0e7ff 100%);
+                    border-radius: 8px;
+                    padding: 15px;
+                    border: 1px solid #c7d2fe;
+                    font-family: 'Monaco', 'Consolas', monospace;
+                    font-size: 12px;
+                    line-height: 1.4;
+                    max-height: 400px;
+                    overflow-y: auto;
+                }
+                .cot-streaming {
+                    animation: pulse 2s infinite;
+                }
+                @keyframes pulse {
+                    0% { opacity: 1; }
+                    50% { opacity: 0.7; }
+                    100% { opacity: 1; }
+                }
                 """
             ) as interface:
                 
@@ -1106,8 +1162,8 @@ class EnhancedRedditMentionTracker:
                 gr.Markdown(f"""
                 <div style="text-align: center; padding: 30px; background: linear-gradient(135deg, #2563eb 0%, #7c3aed 100%); border-radius: 12px; margin-bottom: 30px; color: white;">
                     <h1 style="margin: 0; font-size: 36px; font-weight: bold;">🚀 {self.settings.app_name}</h1>
-                    <p style="margin: 10px 0 0 0; font-size: 18px; opacity: 0.9;">v{self.settings.app_version} - Advanced Reddit Mention Analytics</p>
-                    <p style="margin: 5px 0 0 0; font-size: 14px; opacity: 0.8;">Real-time monitoring • Data validation • Comprehensive insights</p>
+                    <p style="margin: 10px 0 0 0; font-size: 18px; opacity: 0.9;">v{self.settings.app_version} - Advanced Reddit Mention Analytics with AI Analysis</p>
+                    <p style="margin: 5px 0 0 0; font-size: 14px; opacity: 0.8;">Real-time monitoring • Data validation • Comprehensive insights • 🤖 AI-powered analysis</p>
                 </div>
                 """)
                 
@@ -1330,7 +1386,80 @@ class EnhancedRedditMentionTracker:
                         
                         monitor_refresh = gr.Button("🔄 Refresh System Monitor")
                     
-                    # 7. Configuration Tab - SETTINGS
+                    # 7. LLM Analysis Tab - INTELLIGENT DATA QUERYING
+                    with gr.Tab("🤖 AI Analysis"):
+                        gr.Markdown("### 🧠 **AI-Powered Data Analysis**")
+                        gr.Markdown("Ask natural language questions about your Reddit data and get intelligent insights powered by advanced AI.")
+                        
+                        with gr.Row():
+                            with gr.Column(scale=2):
+                                # LLM Query Interface
+                                llm_query = gr.Textbox(
+                                    label="Ask about your data",
+                                    placeholder="What is the overall sentiment about this topic? Which subreddits have the most engagement? What are the main themes in the discussions?",
+                                    lines=3,
+                                    max_lines=5
+                                )
+                                
+                                with gr.Row():
+                                    llm_analyze_btn = gr.Button(
+                                        "🧠 Get AI Analysis", 
+                                        variant="primary",
+                                        size="lg"
+                                    )
+                                    llm_clear_btn = gr.Button(
+                                        "🗑️ Clear", 
+                                        variant="secondary"
+                                    )
+                                
+                                # Chain of Thought Display
+                                with gr.Accordion("🧠 Chain of Thought (Real-time)", open=False) as cot_accordion:
+                                    cot_display = gr.Markdown(
+                                        value="**Chain of thought will appear here during streaming analysis...**",
+                                        label="AI Reasoning Process",
+                                        elem_classes=["llm-cot"]
+                                    )
+                                
+                                # Suggested Questions
+                                with gr.Accordion("💡 Suggested Questions", open=True):
+                                    suggested_questions = gr.HTML(
+                                        value="<p><i>Run a search first to see AI-generated question suggestions based on your data.</i></p>"
+                                    )
+                                    
+                                # Analysis Status
+                                llm_status = gr.Textbox(
+                                    label="Analysis Status",
+                                    value="🤖 AI Analysis ready - search for data first, then ask questions",
+                                    interactive=False,
+                                    lines=2
+                                )
+                            
+                            with gr.Column(scale=3):
+                                # AI Analysis Results
+                                llm_results = gr.Markdown(
+                                    label="AI Analysis Results",
+                                    value="## 🤖 AI Analysis Results\n\n*Ask a question about your Reddit data to see intelligent insights here.*\n\n**Example questions:**\n- What is the overall sentiment?\n- Which communities are most engaged?\n- What are the key themes and trends?\n- Are there any concerning patterns?\n- What recommendations do you have?",
+                                    elem_classes=["llm-results"]
+                                )
+                                
+                                # Analysis Metadata
+                                with gr.Accordion("📊 Analysis Details", open=False):
+                                    llm_metadata = gr.JSON(
+                                        label="Analysis Metadata",
+                                        value={}
+                                    )
+                        
+                        # Analysis History
+                        with gr.Accordion("📜 Analysis History", open=False):
+                            llm_history = gr.Dataframe(
+                                headers=["Timestamp", "Question", "Model", "Tokens Used"],
+                                label="Recent AI Analyses",
+                                interactive=False,
+                                value=pd.DataFrame(columns=["Timestamp", "Question", "Model", "Tokens Used"])
+                            )
+                            llm_history_refresh = gr.Button("🔄 Refresh History")
+                    
+                    # 8. Configuration Tab - SETTINGS
                     with gr.Tab("⚙️ Configuration"):
                         with gr.Row():
                             with gr.Column():
@@ -1779,6 +1908,236 @@ class EnhancedRedditMentionTracker:
                     handle_refresh_mentions,
                     inputs=[sort_by, filter_subreddit, min_score],
                     outputs=[mentions_table]
+                )
+                
+                # LLM Analysis Event Handlers
+                def generate_suggested_questions_handler():
+                    """Generate suggested questions based on the most recent search data."""
+                    try:
+                        # Get the most recent search data
+                        history = self.get_search_history()
+                        if not history:
+                            return "<p><i>No search data available. Run a search first to get AI-generated question suggestions.</i></p>"
+                        
+                        # Get mentions from the most recent session
+                        latest_session_id = history[0]['id']
+                        search_term = history[0]['search_term']
+                        
+                        mentions = self.db_manager.get_mentions_by_session(latest_session_id)
+                        if not mentions:
+                            return "<p><i>No mention data found for the latest search.</i></p>"
+                        
+                        # Convert mentions to dict format for LLM analyzer
+                        mentions_dict = []
+                        for mention in mentions:
+                            mentions_dict.append({
+                                'title': mention.title,
+                                'content': mention.content or '',
+                                'author': mention.author,
+                                'subreddit': mention.subreddit,
+                                'score': mention.score,
+                                'num_comments': mention.num_comments,
+                                'sentiment_score': mention.sentiment_score,
+                                'created_utc': mention.created_utc
+                            })
+                        
+                        # Generate suggestions
+                        if self.llm_analyzer and self.llm_analyzer.is_available():
+                            suggestions = self.llm_analyzer.generate_suggested_questions(mentions_dict, search_term)
+                        else:
+                            suggestions = [
+                                f"What is the overall sentiment about '{search_term}' on Reddit?",
+                                f"Which subreddits are discussing '{search_term}' the most?",
+                                f"What are the main themes and topics in '{search_term}' discussions?",
+                                f"How engaged is the Reddit community with '{search_term}' content?"
+                            ]
+                        
+                        # Format as HTML with clickable suggestions
+                        html_suggestions = "<div style='margin: 10px 0;'>"
+                        html_suggestions += f"<p><strong>💡 AI-Generated Questions for '{search_term}':</strong></p>"
+                        html_suggestions += "<ul style='list-style-type: none; padding-left: 0;'>"
+                        
+                        for i, suggestion in enumerate(suggestions, 1):
+                            html_suggestions += f"""
+                            <li style='margin: 8px 0; padding: 8px; background: #f8fafc; border-radius: 6px; border-left: 3px solid #2563eb;'>
+                                <strong>{i}.</strong> {suggestion}
+                            </li>
+                            """
+                        
+                        html_suggestions += "</ul>"
+                        html_suggestions += "<p><i>💡 Click on any question above and copy it to the query box, or create your own!</i></p>"
+                        html_suggestions += "</div>"
+                        
+                        return html_suggestions
+                        
+                    except Exception as e:
+                        self.logger.error(f"Error generating suggested questions: {e}")
+                        return f"<p style='color: red;'>Error generating suggestions: {str(e)}</p>"
+                
+                def handle_llm_analysis(query):
+                    """Handle LLM analysis request with chain of thought display."""
+                    try:
+                        if not query or not query.strip():
+                            return (
+                                "⚠️ Please enter a question to analyze",
+                                "**Chain of thought will appear here during analysis...**",
+                                "## 🤖 AI Analysis Results\n\n*Please enter a question about your Reddit data.*",
+                                {},
+                                generate_suggested_questions_handler()
+                            )
+                        
+                        if not self.llm_analyzer or not self.llm_analyzer.is_available():
+                            return (
+                                "❌ AI Analysis not available - please check Groq API key configuration",
+                                "**Chain of thought not available**",
+                                "## 🤖 AI Analysis Not Available\n\n**Error:** LLM analyzer is not properly configured.\n\n**To enable AI analysis:**\n1. Install groq package: `pip install groq`\n2. Set your Groq API key: `export GROQ_API_KEY=your_key_here`\n3. Restart the application",
+                                {},
+                                generate_suggested_questions_handler()
+                            )
+                        
+                        # Get the most recent search data
+                        history = self.get_search_history()
+                        if not history:
+                            return (
+                                "📊 No search data available for analysis",
+                                "**No data to analyze**",
+                                "## 🤖 No Data Available\n\n*Please run a Reddit search first to collect data for AI analysis.*",
+                                {},
+                                generate_suggested_questions_handler()
+                            )
+                        
+                        # Get mentions from the most recent session
+                        latest_session_id = history[0]['id']
+                        search_term = history[0]['search_term']
+                        
+                        mentions = self.db_manager.get_mentions_by_session(latest_session_id)
+                        if not mentions:
+                            return (
+                                "📊 No mention data found for analysis",
+                                "**No mentions to analyze**",
+                                "## 🤖 No Mention Data\n\n*No Reddit mentions found in the latest search session.*",
+                                {},
+                                generate_suggested_questions_handler()
+                            )
+                        
+                        # Convert mentions to dict format for LLM analyzer
+                        mentions_dict = []
+                        for mention in mentions:
+                            mentions_dict.append({
+                                'title': mention.title,
+                                'content': mention.content or '',
+                                'author': mention.author,
+                                'subreddit': mention.subreddit,
+                                'score': mention.score,
+                                'num_comments': mention.num_comments,
+                                'sentiment_score': mention.sentiment_score,
+                                'relevance_score': mention.relevance_score,
+                                'created_utc': mention.created_utc,
+                                'url': mention.url
+                            })
+                        
+                        # Perform analysis (non-streaming version for stability)
+                        try:
+                            # Use the regular analyze_data method instead of streaming
+                            import asyncio
+                            
+                            # Create a simple wrapper for the async call
+                            async def get_analysis():
+                                return await self.llm_analyzer.analyze_data(
+                                    user_query=query.strip(),
+                                    mentions=mentions_dict,
+                                    search_term=search_term
+                                )
+                            
+                            # Run the async analysis
+                            try:
+                                loop = asyncio.get_event_loop()
+                                analysis_result, metadata = loop.run_until_complete(get_analysis())
+                            except RuntimeError:
+                                # If no loop is running, create a new one
+                                analysis_result, metadata = asyncio.run(get_analysis())
+                            
+                            # Extract chain of thought from metadata
+                            chain_of_thought = metadata.get('think_content', 'No chain of thought available')
+                            final_content_only = metadata.get('final_content', analysis_result)  # Fallback to full if no separation
+                            tokens_used = metadata.get('tokens_used', {}).get('total', 0)
+                            model_used = metadata.get('model_used', 'unknown')
+                            
+                            # Format chain of thought for display
+                            if chain_of_thought and chain_of_thought != 'No chain of thought available':
+                                cot_display = f"**🧠 AI Chain of Thought:**\n\n{chain_of_thought}\n\n*Analysis complete*"
+                            else:
+                                cot_display = "**No chain of thought available for this model**"
+                            
+                            # Format final results (only the actual analysis, no think content)
+                            final_results = f"## 🤖 AI Analysis Results\n\n**Question:** {query}\n\n**Analysis:**\n\n{final_content_only}"
+                            
+                            return (
+                                f"✅ Analysis complete! Used {tokens_used} tokens | Model: {model_used}",
+                                cot_display,
+                                final_results,
+                                metadata,
+                                generate_suggested_questions_handler()
+                            )
+                            
+                        except Exception as analysis_error:
+                            error_msg = f"Analysis failed: {str(analysis_error)}"
+                            return (
+                                f"❌ {error_msg}",
+                                "**Error occurred during analysis**",
+                                f"## 🤖 Analysis Error\n\n**Error:** {error_msg}\n\n*Please try again or check your query.*",
+                                {'error': str(analysis_error)},
+                                generate_suggested_questions_handler()
+                            )
+                        
+                    except Exception as e:
+                        error_msg = f"AI analysis failed: {str(e)}"
+                        self.logger.error(error_msg)
+                        return (
+                            f"❌ {error_msg}",
+                            "**Error occurred during analysis**",
+                            f"## 🤖 Analysis Error\n\n**Error:** {error_msg}\n\n*Please try again or check your query.*",
+                            {'error': str(e)},
+                            generate_suggested_questions_handler()
+                        )
+                
+                def handle_llm_clear():
+                    """Clear LLM interface."""
+                    return (
+                        "",
+                        "🤖 AI Analysis ready - search for data first, then ask questions",
+                        "**Chain of thought will appear here during analysis...**",
+                        "## 🤖 AI Analysis Results\n\n*Ask a question about your Reddit data to see intelligent insights here.*",
+                        {}
+                    )
+                
+                def handle_llm_history_refresh():
+                    """Refresh LLM analysis history."""
+                    # This would load from database if history tracking was implemented
+                    return pd.DataFrame(columns=["Timestamp", "Question", "Model", "Tokens Used"])
+                
+                # Wire up LLM events
+                llm_analyze_btn.click(
+                    handle_llm_analysis,
+                    inputs=[llm_query],
+                    outputs=[llm_status, cot_display, llm_results, llm_metadata, suggested_questions]
+                )
+                
+                # Wire up streaming LLM events
+                llm_clear_btn.click(
+                    handle_llm_clear,
+                    outputs=[llm_query, llm_status, cot_display, llm_results, llm_metadata]
+                )
+                
+                llm_history_refresh.click(
+                    handle_llm_history_refresh,
+                    outputs=[llm_history]
+                )
+                
+                # Auto-update suggested questions when search completes
+                search_btn.click(
+                    generate_suggested_questions_handler,
+                    outputs=[suggested_questions]
                 )
                 
                 # FIXED AUTO-REFRESH: System monitor auto-refresh every 30 seconds

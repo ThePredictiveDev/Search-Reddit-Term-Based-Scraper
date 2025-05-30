@@ -1018,9 +1018,9 @@ class MetricsVisualizer:
             'Daily Average': 15,  # Average daily mentions
             'Trend Score': 85    # Overall trend score (0-100)
         }
-        
+            
         fig.add_trace(
-            go.Bar(
+                go.Bar(
                 x=list(summary_metrics.keys()),
                 y=list(summary_metrics.values()),
                 marker_color=[
@@ -1030,10 +1030,10 @@ class MetricsVisualizer:
                     self.color_scheme['positive']
                 ],
                 text=list(summary_metrics.values()),
-                textposition='auto',
+                    textposition='auto',
                 name='Temporal Summary'
+                )
             )
-        )
             
         return self._safe_update_layout(
             fig,
@@ -1208,9 +1208,9 @@ class MetricsVisualizer:
             'One-time Authors': author_data.get('single_post_authors', 35),
             'Diversity Ratio': int(author_data.get('author_diversity_ratio', 0.7) * 100)
         }
-        
+            
         fig.add_trace(
-            go.Bar(
+                go.Bar(
                 x=list(diversity_metrics.keys()),
                 y=list(diversity_metrics.values()),
                 marker_color=[
@@ -1220,10 +1220,10 @@ class MetricsVisualizer:
                     self.color_scheme['accent']
                 ],
                 text=list(diversity_metrics.values()),
-                textposition='auto',
+                    textposition='auto',
                 name='Author Diversity'
+                )
             )
-        )
         
         return self._safe_update_layout(
             fig,
@@ -1289,7 +1289,7 @@ class MetricsVisualizer:
             rows=2, cols=2,
             subplot_titles=[
                 'Quality Score Distribution',
-                'Time Series Decomposition', 
+                'Time Series Decomposition',
                 'Engagement Performance',
                 'Predictive Trends'
             ],
