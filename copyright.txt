@@ -1,0 +1,54 @@
+COPYRIGHT.txt
+================================================================================
+
+Project: Advanced Reddit Mention Tracker
+Author: ThePredictiveDev (GitHub: https://github.com/ThePredictiveDev)
+Copyright (c) 2024-2025 ThePredictiveDev. All Rights Reserved.
+
+================================================================================
+
+TERMS OF USE:
+
+This software, Advanced Reddit Mention Tracker (hereinafter "the Software"), is provided by ThePredictiveDev (hereinafter "the Author").
+
+**1. Grant of License for Personal, Non-Commercial Use:**
+
+The Author hereby grants you a non-exclusive, non-transferable, royalty-free license to use, copy, modify, and merge the Software for PERSONAL, NON-COMMERCIAL, and EDUCATIONAL purposes only. This includes:
+    a. Running the Software on your personal computer(s).
+    b. Modifying the Software for your personal use or educational exploration.
+    c. Sharing unmodified or modified versions of the Software with other individuals strictly for their personal, non-commercial, or educational use, provided that this COPYRIGHT.txt file (or a file containing substantially the same terms) is included with all copies or substantial portions of the Software, and that the original authorship is duly acknowledged.
+
+**2. Restrictions on Use:**
+
+You are expressly prohibited from:
+    a. Using the Software for any COMMERCIAL PURPOSES. Commercial purposes include, but are not limited to:
+        i. Selling the Software or any part thereof.
+        ii. Using the Software as part of a paid service or product.
+        iii. Using the Software to generate revenue directly or indirectly for a business or commercial entity.
+        iv. Distributing the Software as part of a commercial offering.
+    b. Removing or altering any copyright, trademark, or other proprietary notices contained in the Software.
+    c. Sublicensing, renting, leasing, or otherwise transferring your rights to the Software to any third party for commercial exploitation.
+
+**3. Commercial Licensing:**
+
+If you wish to use the Software for commercial purposes, you must obtain a separate commercial license from the Author. Please contact the Author through their GitHub profile (https://github.com/ThePredictiveDev) to inquire about commercial licensing terms.
+
+**4. No Warranty:**
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE, AND NONINFRINGEMENT. THE AUTHOR MAKES NO WARRANTY THAT THE SOFTWARE WILL BE ERROR-FREE OR THAT ACCESS THERETO WILL BE CONTINUOUS OR UNINTERRUPTED.
+
+**5. Limitation of Liability:**
+
+IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY CLAIM, DAMAGES, OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT, OR OTHERWISE, ARISING FROM, OUT OF, OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE. THIS INCLUDES, BUT IS NOT LIMITED TO, ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+**6. Attribution:**
+
+While not a strict requirement for personal use beyond including this notice, if you showcase or discuss work derived from or using this Software (e.g., in academic papers, blog posts, presentations for non-commercial purposes), attribution to the original project "Advanced Reddit Mention Tracker by ThePredictiveDev" and a link to the GitHub repository (https://github.com/ThePredictiveDev/Search-Reddit-Term-Based-Scraper) would be appreciated.
+
+**7. Governing Law:**
+
+Any disputes arising from this license shall be governed by the laws applicable in the Author's jurisdiction, without regard to its conflict of law provisions.
+
+================================================================================
+
+By using, copying, modifying, or distributing the Software, you agree to be bound by the terms of this license. If you do not agree to these terms, do not use, copy, modify, or distribute the Software.
